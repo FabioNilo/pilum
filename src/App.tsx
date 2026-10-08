@@ -31,7 +31,7 @@ export default function App() {
             <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
               <div>
                 <p className="eyebrow">Soluções por nicho</p>
-                <h2 className="mt-2 max-w-2xl text-3xl uppercase sm:text-5xl">
+                <h2 className="mt-2 max-w-2xl text-3xl uppercase sm:text-4xl">
                   Soluções prontas para adaptar ao seu negócio, testadas em restaurantes e delivery
                 </h2>
                 <p className="mt-3 max-w-2xl text-ink-soft">
