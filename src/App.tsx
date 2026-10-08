@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { track } from "@/lib/track";
 import { primaryNiches, projects, type NicheId } from "@/data/projects";
 import { ProjectCard } from "@/components/ProjectCard";
 import { CtaFooter, Differentials, Header, Hero, HowItWorks, NicheFilter, PainStrip } from "@/components/Sections";
@@ -9,12 +10,20 @@ export default function App() {
   const main = visible.filter((p) => primaryNiches.includes(p.niche));
   const others = visible.filter((p) => !primaryNiches.includes(p.niche));
 
+  // Clique numa dor: abre todos os nichos (para o card existir) e rola até a solução.
+  const goToSolution = (projectId: string, ref: string) => {
+    setNiche("todos");
+    track("dor_click", { ref });
+    const smooth = !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    window.setTimeout(() => document.getElementById(projectId)?.scrollIntoView({ behavior: smooth ? "smooth" : "auto", block: "start" }), 60);
+  };
+
   return (
     <>
       <Header />
       <main>
         <Hero projects={projects} />
-        <PainStrip onPick={setNiche} />
+        <PainStrip onPick={goToSolution} />
 
         <section id="solucoes" className="section scroll-mt-16">
           <div className="container">

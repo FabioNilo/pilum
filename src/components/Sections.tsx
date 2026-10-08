@@ -1,8 +1,8 @@
 import {
   ArrowDown,
   BarChart3,
+  Bike,
   ClipboardList,
-  CalendarX2,
   FileSpreadsheet,
   Github,
   Mail,
@@ -112,14 +112,39 @@ const heroPoints = [
   { icon: Smartphone, text: "Funciona no celular, para você e para o seu cliente" },
 ];
 
-const pains: { icon: typeof Percent; title: string; text: string; niche: NicheId }[] = [
-  { icon: Percent, title: "Comissão de aplicativo", text: "Venda direto, sem perder parte de cada pedido.", niche: "restaurantes" },
-  { icon: MessagesSquare, title: "Pedido perdido no WhatsApp", text: "Pedidos organizados num painel, nada fica para trás.", niche: "alimentacao" },
-  { icon: CalendarX2, title: "Agenda e prontuário no papel", text: "Pacientes, sessões e cobranças num só lugar.", niche: "saude" },
-  { icon: FileSpreadsheet, title: "Planilha que ninguém entende", text: "Prestação de contas pronta em PDF.", niche: "condominios" },
+// Cada dor leva à solução que a resolve; o botão de WhatsApp fica no card, com mensagem coerente.
+const pains: { icon: typeof Percent; scene: string; relief: string; projectId: string; ref: string }[] = [
+  {
+    icon: MessagesSquare,
+    scene: "O pedido chegou no meio de 30 conversas do WhatsApp",
+    relief: "Pedidos num painel só, nada se perde.",
+    projectId: "marmitas",
+    ref: "dor-pedido-perdido",
+  },
+  {
+    icon: Percent,
+    scene: "Uma parte de cada venda fica com o aplicativo de entrega",
+    relief: "Venda direto, no seu próprio site.",
+    projectId: "delivery-proprio",
+    ref: "dor-comissao",
+  },
+  {
+    icon: FileSpreadsheet,
+    scene: "A planilha só você entende, e só no fim do mês",
+    relief: "Veja como o dia foi, no celular.",
+    projectId: "restaurante-mesa",
+    ref: "dor-planilha",
+  },
+  {
+    icon: Bike,
+    scene: "O motoboy saiu e ninguém sabe se o pedido chegou",
+    relief: "Cada entrega com status, no painel.",
+    projectId: "plataforma-restaurantes",
+    ref: "dor-motoboy",
+  },
 ];
 
-export function PainStrip({ onPick }: { onPick: (n: NicheId) => void }) {
+export function PainStrip({ onPick }: { onPick: (projectId: string, ref: string) => void }) {
   return (
     <section aria-labelledby="dores" className="border-y border-paper-line bg-paper-card">
       <div className="container py-12">
@@ -127,19 +152,24 @@ export function PainStrip({ onPick }: { onPick: (n: NicheId) => void }) {
           Qual destes problemas você tem hoje?
         </h2>
         <div className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-          {pains.map(({ icon: Icon, title, text, niche }) => (
+          {pains.map(({ icon: Icon, scene, relief, projectId, ref }) => (
             <a
-              key={title}
-              href="#solucoes"
-              onClick={() => onPick(niche)}
-              className="group flex gap-3 rounded-2xl border border-paper-line p-4 transition-colors hover:border-accent/50 hover:bg-accent-soft/60"
+              key={ref}
+              href={`#${projectId}`}
+              onClick={(e) => {
+                e.preventDefault();
+                onPick(projectId, ref);
+              }}
+              className="group flex flex-col gap-3 rounded-2xl border border-paper-line p-4 transition-colors hover:border-accent/50 hover:bg-accent-soft/60"
             >
               <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-ink text-paper">
                 <Icon className="h-5 w-5" aria-hidden />
               </span>
-              <span>
-                <span className="block font-semibold">{title}</span>
-                <span className="mt-0.5 block text-sm text-ink-mute">{text}</span>
+              <span className="block font-semibold leading-snug">{scene}</span>
+              <span className="block text-sm text-ink-mute">{relief}</span>
+              <span className="mt-auto inline-flex items-center gap-1 text-sm font-medium text-accent group-hover:underline">
+                Ver a solução
+                <ArrowDown className="h-3.5 w-3.5" aria-hidden />
               </span>
             </a>
           ))}
