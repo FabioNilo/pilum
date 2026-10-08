@@ -1,0 +1,231 @@
+{
+  "consultorio-psi": [
+    {
+      "src": "/shots/consultorio-psi/01-dashboard.webp",
+      "caption": "Painel do dia: sessões, pacientes ativos e pendências financeiras",
+      "device": "desktop"
+    },
+    {
+      "src": "/shots/consultorio-psi/02-agenda.webp",
+      "caption": "Agenda de atendimentos da semana",
+      "device": "desktop"
+    },
+    {
+      "src": "/shots/consultorio-psi/03-paciente.webp",
+      "caption": "Perfil completo do paciente, com contatos e histórico",
+      "device": "desktop"
+    },
+    {
+      "src": "/shots/consultorio-psi/04-anamnese.webp",
+      "caption": "Anamnese e documentação clínica organizadas",
+      "device": "desktop"
+    },
+    {
+      "src": "/shots/consultorio-psi/05-financeiro.webp",
+      "caption": "Financeiro: faturas, pagamentos e valores em aberto",
+      "device": "desktop"
+    },
+    {
+      "src": "/shots/consultorio-psi/06-agenda-mobile.webp",
+      "caption": "Tudo funciona no celular, entre um atendimento e outro",
+      "device": "mobile"
+    }
+  ],
+  "restaurante-mesa": [
+    {
+      "src": "/shots/restaurante-mesa/01-inicio-mobile.webp",
+      "caption": "Site com a marca do restaurante, pronto para o celular",
+      "device": "mobile"
+    },
+    {
+      "src": "/shots/restaurante-mesa/02-cardapio-mobile.webp",
+      "caption": "Cardápio com busca, categorias e opções de sabor e tamanho",
+      "device": "mobile"
+    },
+    {
+      "src": "/shots/restaurante-mesa/03-mesa-qr.webp",
+      "caption": "Pedido na mesa pelo QR Code: vai direto para o caixa",
+      "device": "mobile"
+    },
+    {
+      "src": "/shots/restaurante-mesa/04-mesas.webp",
+      "caption": "Mapa das mesas ao vivo, com a conta de cada uma",
+      "device": "desktop"
+    },
+    {
+      "src": "/shots/restaurante-mesa/05-delivery.webp",
+      "caption": "Pedidos de delivery em andamento, do preparo à entrega",
+      "device": "desktop"
+    },
+    {
+      "src": "/shots/restaurante-mesa/06-metricas.webp",
+      "caption": "Métricas: vendas, ticket médio e vendas por canal",
+      "device": "desktop"
+    },
+    {
+      "src": "/shots/restaurante-mesa/07-desempenho.webp",
+      "caption": "Produtos que mais vendem e os que estão parados",
+      "device": "desktop"
+    }
+  ],
+  "plataforma-restaurantes": [
+    {
+      "src": "/shots/plataforma-restaurantes/01-loja-mobile.webp",
+      "caption": "Loja online com cardápio, destaques e carrinho",
+      "device": "mobile"
+    },
+    {
+      "src": "/shots/plataforma-restaurantes/02-mesa-mobile.webp",
+      "caption": "Comanda da mesa pelo QR Code, com pagamento online",
+      "device": "mobile"
+    },
+    {
+      "src": "/shots/plataforma-restaurantes/03-entregador.webp",
+      "caption": "App do motoboy: ele atualiza a entrega pelo celular",
+      "device": "mobile"
+    },
+    {
+      "src": "/shots/plataforma-restaurantes/04-pedidos.webp",
+      "caption": "Quadro de pedidos em tempo real, com impressão automática",
+      "device": "desktop"
+    },
+    {
+      "src": "/shots/plataforma-restaurantes/05-metricas.webp",
+      "caption": "Métricas de vendas e desempenho do restaurante",
+      "device": "desktop"
+    },
+    {
+      "src": "/shots/plataforma-restaurantes/06-estoque.webp",
+      "caption": "Estoque de bebidas com baixa automática e alerta de reposição",
+      "device": "desktop"
+    },
+    {
+      "src": "/shots/plataforma-restaurantes/07-fidelidade.webp",
+      "caption": "Programa de fidelidade: pontos e recompensas",
+      "device": "desktop"
+    }
+  ],
+  "delivery-proprio": [
+    {
+      "src": "/shots/delivery-proprio/01-inicio.webp",
+      "caption": "Site de pedidos com a marca do restaurante, sem app de terceiros",
+      "device": "desktop"
+    },
+    {
+      "src": "/shots/delivery-proprio/02-cardapio.webp",
+      "caption": "Cardápio por categoria, com fotos e tamanhos",
+      "device": "desktop"
+    },
+    {
+      "src": "/shots/delivery-proprio/03-cardapio-mobile.webp",
+      "caption": "No celular, o cliente escolhe e adiciona em poucos toques",
+      "device": "mobile"
+    },
+    {
+      "src": "/shots/delivery-proprio/04-carrinho.webp",
+      "caption": "Carrinho com taxa de entrega calculada pelo bairro",
+      "device": "mobile"
+    },
+    {
+      "src": "/shots/delivery-proprio/05-acompanhamento.webp",
+      "caption": "O cliente acompanha o pedido em tempo real",
+      "device": "mobile"
+    }
+  ],
+  "marmitas": [
+    {
+      "src": "/shots/marmitas/01-inicio-mobile.webp",
+      "caption": "Loja online com a sua marca, pronta para o celular",
+      "device": "mobile"
+    },
+    {
+      "src": "/shots/marmitas/02-cardapio-mobile.webp",
+      "caption": "Cardápio com fotos reais dos pratos e carrinho",
+      "device": "mobile"
+    },
+    {
+      "src": "/shots/marmitas/03-cardapio.webp",
+      "caption": "Catálogo organizado por categoria, com estoque controlado",
+      "device": "desktop"
+    },
+    {
+      "src": "/shots/marmitas/04-pedidos.webp",
+      "caption": "CRM de pedidos: status, cliente e contato direto pelo WhatsApp",
+      "device": "desktop"
+    },
+    {
+      "src": "/shots/marmitas/05-caixa.webp",
+      "caption": "Caixa com entradas, saídas e saldo do período",
+      "device": "desktop"
+    },
+    {
+      "src": "/shots/marmitas/06-financeiro.webp",
+      "caption": "Financeiro: faturamento, custos, despesas e margem",
+      "device": "desktop"
+    }
+  ],
+  "clinica-odonto": [
+    {
+      "src": "/shots/clinica-odonto/01-site.webp",
+      "caption": "Site da clínica com botão de agendamento",
+      "device": "desktop"
+    },
+    {
+      "src": "/shots/clinica-odonto/02-site-mobile.webp",
+      "caption": "Site pensado para o paciente que chega pelo celular",
+      "device": "mobile"
+    },
+    {
+      "src": "/shots/clinica-odonto/03-visao-geral.webp",
+      "caption": "Visão geral do dia: solicitações, confirmações e próximos pacientes",
+      "device": "desktop"
+    },
+    {
+      "src": "/shots/clinica-odonto/04-solicitacoes.webp",
+      "caption": "Pedidos de agendamento vindos do assistente de WhatsApp",
+      "device": "desktop"
+    },
+    {
+      "src": "/shots/clinica-odonto/05-agenda.webp",
+      "caption": "Agenda por profissional, com status de cada consulta",
+      "device": "desktop"
+    },
+    {
+      "src": "/shots/clinica-odonto/06-financeiro.webp",
+      "caption": "Financeiro: faturamento, recebimentos, orçamentos e inadimplentes",
+      "device": "desktop"
+    }
+  ],
+  "condominio": [
+    {
+      "src": "/shots/condominio/01-inicio.webp",
+      "caption": "Receitas, despesas e comprovantes do condomínio em um só lugar",
+      "device": "desktop"
+    },
+    {
+      "src": "/shots/condominio/02-painel.webp",
+      "caption": "Painel com receitas, despesas e saldo do mês",
+      "device": "desktop"
+    },
+    {
+      "src": "/shots/condominio/03-receitas.webp",
+      "caption": "Receitas por unidade e competência, com status de pagamento",
+      "device": "desktop"
+    },
+    {
+      "src": "/shots/condominio/04-inadimplencia.webp",
+      "caption": "Lista de inadimplentes sempre atualizada",
+      "device": "desktop"
+    },
+    {
+      "src": "/shots/condominio/05-relatorio.webp",
+      "caption": "Relatório mensal pronto para prestar contas, em PDF",
+      "device": "desktop"
+    },
+    {
+      "src": "/shots/condominio/06-comprovante.webp",
+      "caption": "Recibo numerado com valor por extenso",
+      "device": "desktop"
+    }
+  ]
+}

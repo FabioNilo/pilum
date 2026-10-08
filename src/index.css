@@ -1,0 +1,27 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html { scroll-behavior: smooth; }
+  body { @apply bg-paper text-ink font-sans antialiased; }
+  h1, h2 { @apply font-display font-normal tracking-[0.005em]; }
+  h3 { @apply font-sans tracking-tight; }
+  /* Anton só tem peso 400: evita negrito sintético */
+  .font-display { font-synthesis: none; }
+  :focus-visible { @apply outline-none ring-2 ring-accent ring-offset-2 ring-offset-paper; }
+}
+
+@layer components {
+  .btn { @apply inline-flex items-center justify-center gap-2 rounded-md px-5 py-3 text-sm font-semibold transition-colors; }
+  .btn-primary { @apply btn bg-accent text-white hover:bg-accent-ink; }
+  .btn-dark { @apply btn bg-ink text-white hover:bg-ink-soft; }
+  .btn-ghost { @apply btn border border-paper-line bg-white text-ink hover:border-ink/40; }
+  .eyebrow { @apply font-mono text-xs font-medium uppercase tracking-[0.2em] text-accent; }
+  .section { @apply py-16 sm:py-24; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { transition: none !important; animation: none !important; }
+}
