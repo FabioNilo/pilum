@@ -17,7 +17,7 @@ import {
   Wallet,
 } from "lucide-react";
 import { site } from "@/config";
-import { niches, type NicheId, type ProjectWithSlides } from "@/data/projects";
+import { niches, PRICING, type NicheId, type ProjectWithSlides } from "@/data/projects";
 import { defaultMessage, waProps } from "@/lib/whatsapp";
 import { DeviceFrame } from "./DeviceFrame";
 import { PilumLogo } from "./Logo";
@@ -207,7 +207,7 @@ export function NicheFilter({ value, onChange }: { value: NicheId | "todos"; onC
 
 const steps = [
   { title: "Conversa", text: "Você me conta como o negócio funciona hoje e onde perde tempo ou dinheiro." },
-  { title: "Protótipo", text: "Adapto uma solução pronta ao seu negócio, com a sua marca. Você testa antes de decidir." },
+  { title: "Protótipo", text: "Primeira versão em menos de 24 horas, com a sua marca. Você testa antes de decidir; ajustes e novas funções a gente combina numa reunião." },
   { title: "No ar", text: "Publico, treino sua equipe e acompanho os primeiros dias de uso." },
 ];
 
@@ -230,8 +230,8 @@ export function HowItWorks() {
         <div className="mt-8 rounded-2xl border border-paper/10 p-6">
           <h3 className="font-mono text-xs font-bold uppercase tracking-[0.2em] text-accent-bright">Como funciona o valor</h3>
           <ul className="mt-4 space-y-2.5 text-paper/80">
-            {/* TODO(fabio): confirmar o modelo (implantação única + mensalidade) e o que está incluso em cada parte. */}
-            <li>Sem taxa de implantação, apenas mensalidade. Não há comissão sobre suas vendas.</li>
+            {/* TODO(fabio): confirmar o modelo (só mensalidade) e o que está incluso. O texto vem de PRICING em src/data/projects.ts. */}
+            <li>{PRICING}</li>
             {/* TODO(fabio): confirmar o que realmente fica com o cliente (dados, domínio, painel, contas de hospedagem). */}
             <li>Você pode comprar um domínio ou usar um domínio gratuito.</li>
             <li>A taxa da operadora de pagamento (Pix/cartão) é definida pela operadora contratada.</li>

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { track } from "@/lib/track";
 import { primaryNiches, projects, type NicheId } from "@/data/projects";
+import { Chooser } from "@/components/Chooser";
 import { ProjectCard } from "@/components/ProjectCard";
 import { Testimonials } from "@/components/Testimonials";
 import { CtaFooter, Differentials, Header, Hero, HowItWorks, NicheFilter, PainStrip } from "@/components/Sections";
@@ -42,10 +43,12 @@ export default function App() {
               <NicheFilter value={niche} onChange={setNiche} />
             </div>
 
+            {(niche === "todos" || niche === "restaurantes") && main.length > 0 && <Chooser onPick={goToSolution} />}
+
             {main.length > 0 && (
-              <div className="mt-10 space-y-8">
+              <div className="mt-8 space-y-8">
                 {main.map((p, i) => (
-                  <ProjectCard key={p.id} project={p} flip={i % 2 === 1} />
+                  <ProjectCard key={p.id} project={p} flip={i % 2 === 1} onSee={goToSolution} />
                 ))}
               </div>
             )}

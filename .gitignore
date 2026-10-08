@@ -2,3 +2,5 @@ node_modules
 dist
 .env*
 scripts/.tmp
+
+*.tsbuildinfo
