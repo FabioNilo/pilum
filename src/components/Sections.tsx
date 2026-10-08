@@ -1,6 +1,7 @@
 import {
   ArrowDown,
   BarChart3,
+  ClipboardList,
   CalendarX2,
   FileSpreadsheet,
   Github,
@@ -52,14 +53,17 @@ export function Hero({ projects }: { projects: ProjectWithSlides[] }) {
     <section id="topo" className="relative overflow-hidden">
       <div className="container grid items-center gap-12 pb-16 pt-12 sm:pt-20 lg:grid-cols-2 lg:pb-24">
         <div>
-          <p className="eyebrow">Sistemas sob medida para pequenos negócios</p>
+          <p className="eyebrow">Sistemas sob medida para restaurantes, bistrôs e delivery</p>
+          <p className="mt-2 flex items-center gap-1.5 text-sm text-ink-mute">
+            <MapPin className="h-4 w-4" aria-hidden />
+            Ilhéus e Itabuna – BA
+          </p>
           <h1 className="mt-4 text-[2.6rem] uppercase leading-[1.02] sm:text-6xl lg:text-[4.1rem]">
             Menos planilha e papel. <span className="text-accent">Mais vendas e controle.</span>
           </h1>
           <p className="mt-5 max-w-xl text-lg text-ink-soft">
-            Sistemas sob medida para restaurantes, delivery, clínicas e condomínios. Antes de escrever código, entendo
-            onde o seu negócio perde tempo e dinheiro, e o sistema mira exatamente ali: pedidos pelo WhatsApp, agenda,
-            financeiro e relatórios, tudo no celular.
+            Antes de escrever código, entendo onde o seu negócio perde tempo e dinheiro. O sistema mira exatamente ali,
+            e você acompanha tudo pelo celular.
           </p>
           <div className="mt-8 flex flex-wrap gap-3">
             <a className="btn-primary" href={whatsappLink(defaultMessage)} target="_blank" rel="noopener noreferrer">
@@ -71,11 +75,17 @@ export function Hero({ projects }: { projects: ProjectWithSlides[] }) {
               <ArrowDown className="h-4 w-4" aria-hidden />
             </a>
           </div>
-          <dl className="mt-10 grid max-w-md grid-cols-3 gap-4 border-t border-paper-line pt-6">
-            <Stat value={String(projects.length)} label="soluções prontas para adaptar" />
-            <Stat value={String(niches.length)} label="nichos atendidos" />
-            <Stat value="100%" label="responsivo, feito para o celular" />
-          </dl>
+          <ul className="mt-10 max-w-md space-y-3 border-t border-paper-line pt-6">
+            {heroPoints.map(({ icon: Icon, text }) => (
+              <li key={text} className="flex items-start gap-3 text-[0.95rem] text-ink">
+                <Icon className="mt-0.5 h-5 w-5 shrink-0 text-accent" aria-hidden />
+                {text}
+              </li>
+            ))}
+          </ul>
+          <p className="mt-3 max-w-md text-xs text-ink-mute">
+            A taxa da operadora de pagamento (Pix/cartão) é cobrada à parte pela própria operadora.
+          </p>
         </div>
 
         {desktop && (
@@ -96,15 +106,11 @@ export function Hero({ projects }: { projects: ProjectWithSlides[] }) {
   );
 }
 
-function Stat({ value, label }: { value: string; label: string }) {
-  return (
-    <div>
-      <dt className="sr-only">{label}</dt>
-      <dd className="font-display text-3xl">{value}</dd>
-      <dd className="mt-1 text-xs leading-snug text-ink-mute">{label}</dd>
-    </div>
-  );
-}
+const heroPoints = [
+  { icon: ClipboardList, text: "Pedidos organizados num painel" },
+  { icon: Wallet, text: "Sem comissão da Pilum sobre suas vendas" },
+  { icon: Smartphone, text: "Funciona no celular, para você e para o seu cliente" },
+];
 
 const pains: { icon: typeof Percent; title: string; text: string; niche: NicheId }[] = [
   { icon: Percent, title: "Comissão de aplicativo", text: "Venda direto, sem perder parte de cada pedido.", niche: "restaurantes" },

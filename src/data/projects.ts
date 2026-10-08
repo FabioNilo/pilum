@@ -23,6 +23,8 @@ export type Project = {
   problem: string;
   solution: string;
   benefits: string[];
+  /** Funções técnicas, em texto menor, depois dos benefícios. */
+  extras?: string[];
   /** Link para uma demonstração anonimizada. Sem link, o botão não aparece. */
   demoUrl?: string;
   /** Rótulo discreto sobre os prints (todos usam dados fictícios). */
@@ -148,5 +150,11 @@ const desktopFirst = (slides: Slide[]) => [...slides].sort((a, b) => Number(a.de
 // ainda sem clientes autorizados para citar, então levam o rótulo de demonstração.
 const demoLabel = (niche: NicheId) => (niche === "saude" || niche === "condominios" ? "Demonstração · dados fictícios" : "Dados fictícios");
 
-export const projects = base.map((p) => ({ ...p, demoLabel: demoLabel(p.niche), slides: desktopFirst(shotMap[p.id] ?? []) }));
+/** Nichos em destaque; os demais aparecem na seção "Também desenvolvo para". */
+export const primaryNiches: NicheId[] = ["restaurantes", "alimentacao"];
+
+// Ordem na página: restaurantes/bistrôs, delivery, gestão com motoboys e estoque, marmitas; depois clínicas, psicólogos, condomínios.
+const ORDER = ["restaurante-mesa", "delivery-proprio", "plataforma-restaurantes", "marmitas", "clinica-odonto", "consultorio-psi", "condominio"];
+
+export const projects = base.map((p) => ({ ...p, demoLabel: demoLabel(p.niche), slides: desktopFirst(shotMap[p.id] ?? []) })).sort((a, b) => ORDER.indexOf(a.id) - ORDER.indexOf(b.id));
 export type ProjectWithSlides = (typeof projects)[number];

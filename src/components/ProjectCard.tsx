@@ -3,27 +3,40 @@ import type { ProjectWithSlides } from "@/data/projects";
 import { whatsappLink } from "@/lib/whatsapp";
 import { Slideshow } from "./Slideshow";
 
-export function ProjectCard({ project, flip }: { project: ProjectWithSlides; flip: boolean }) {
+type Props = {
+  project: ProjectWithSlides;
+  flip: boolean;
+  /** Versão mais discreta, usada em "Também desenvolvo para". */
+  compact?: boolean;
+};
+
+export function ProjectCard({ project, flip, compact = false }: Props) {
   const p = project;
   return (
     <article
       id={p.id}
-      className="grid scroll-mt-24 items-start gap-8 rounded-3xl border border-paper-line bg-paper-card p-5 shadow-card sm:p-8 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-12"
+      className={`grid scroll-mt-24 items-start gap-8 rounded-3xl border border-paper-line lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-12 ${
+        compact ? "bg-paper p-5" : "bg-paper-card p-5 shadow-card sm:p-8"
+      }`}
     >
       <div className={flip ? "min-w-0 lg:order-2" : "min-w-0"}>
         <p className="eyebrow">{p.audience}</p>
-        <h3 className="mt-2 text-2xl font-bold leading-tight sm:text-[1.75rem]">{p.title}</h3>
+        <h3 className={`mt-2 font-bold leading-tight ${compact ? "text-xl" : "text-2xl sm:text-[1.75rem]"}`}>{p.title}</h3>
 
-        <dl className="mt-5 space-y-3 text-[0.95rem]">
-          <div className="rounded-xl bg-paper px-4 py-3">
-            <dt className="font-mono text-xs font-bold uppercase tracking-[0.16em] text-ink-mute">O problema</dt>
-            <dd className="mt-0.5 text-ink-soft">{p.problem}</dd>
-          </div>
-          <div className="rounded-xl bg-ink px-4 py-3">
-            <dt className="font-mono text-xs font-bold uppercase tracking-[0.16em] text-accent-bright">A solução</dt>
-            <dd className="mt-0.5 text-paper">{p.solution}</dd>
-          </div>
-        </dl>
+        {compact ? (
+          <p className="mt-3 text-[0.95rem] text-ink-soft">{p.solution}</p>
+        ) : (
+          <dl className="mt-5 space-y-3 text-[0.95rem]">
+            <div className="rounded-xl bg-paper px-4 py-3">
+              <dt className="font-mono text-xs font-bold uppercase tracking-[0.16em] text-ink-mute">O problema</dt>
+              <dd className="mt-0.5 text-ink-soft">{p.problem}</dd>
+            </div>
+            <div className="rounded-xl bg-ink px-4 py-3">
+              <dt className="font-mono text-xs font-bold uppercase tracking-[0.16em] text-accent-bright">A solução</dt>
+              <dd className="mt-0.5 text-paper">{p.solution}</dd>
+            </div>
+          </dl>
+        )}
 
         <ul className="mt-5 space-y-2.5">
           {p.benefits.map((b) => (
@@ -33,6 +46,12 @@ export function ProjectCard({ project, flip }: { project: ProjectWithSlides; fli
             </li>
           ))}
         </ul>
+
+        {!compact && p.extras && p.extras.length > 0 && (
+          <p className="mt-4 text-xs leading-relaxed text-ink-mute">
+            <span className="font-medium text-ink-soft">Também inclui:</span> {p.extras.join(" · ")}
+          </p>
+        )}
 
         <div className="mt-6 flex flex-wrap gap-3">
           <a
