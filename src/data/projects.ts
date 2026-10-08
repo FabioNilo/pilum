@@ -25,11 +25,13 @@ export type Project = {
   benefits: string[];
   /** Link para uma demonstração anonimizada. Sem link, o botão não aparece. */
   demoUrl?: string;
+  /** Rótulo discreto sobre os prints (todos usam dados fictícios). */
+  demoLabel: string;
   /** URL de embed (YouTube/Loom). Quando existir, aparece como primeiro slide. */
   videoUrl?: string;
 };
 
-const base: Project[] = [
+const base: Omit<Project, "demoLabel">[] = [
   {
     id: "restaurante-mesa",
     niche: "restaurantes",
@@ -50,7 +52,7 @@ const base: Project[] = [
     niche: "restaurantes",
     audience: "Restaurantes com delivery",
     title: "Delivery próprio, sem comissão de aplicativo",
-    problem: "Os apps de entrega ficam com até 27% de cada pedido.",
+    problem: "Os apps de entrega ficam com uma parte de cada pedido.",
     solution:
       "Um site de pedidos com a sua marca: o cliente escolhe, paga por Pix ou cartão e acompanha o pedido. O valor fica todo com você.",
     benefits: [
@@ -87,7 +89,7 @@ const base: Project[] = [
       "Catálogo com fotos e carrinho, o pedido chega pronto",
       "CRM de pedidos com contato direto pelo WhatsApp",
       "Caixa, despesas, estoque e ficha técnica de custo",
-      "Relatórios em PDF e adequação à LGPD",
+      "Relatórios em PDF e pedidos de dados do cliente (LGPD)", // TODO(fabio): confirmar que a adequação à LGPD está realmente implementada
     ],
   },
   {
@@ -142,5 +144,9 @@ const shotMap = shots as Record<string, Slide[]>;
 // Prints de desktop primeiro: a tela larga causa a primeira impressão no card.
 const desktopFirst = (slides: Slide[]) => [...slides].sort((a, b) => Number(a.device === "mobile") - Number(b.device === "mobile"));
 
-export const projects = base.map((p) => ({ ...p, slides: desktopFirst(shotMap[p.id] ?? []) }));
+// Todos os prints usam dados fictícios. Clínicas, psicólogos e condomínios são soluções prontas para implantar,
+// ainda sem clientes autorizados para citar, então levam o rótulo de demonstração.
+const demoLabel = (niche: NicheId) => (niche === "saude" || niche === "condominios" ? "Demonstração · dados fictícios" : "Dados fictícios");
+
+export const projects = base.map((p) => ({ ...p, demoLabel: demoLabel(p.niche), slides: desktopFirst(shotMap[p.id] ?? []) }));
 export type ProjectWithSlides = (typeof projects)[number];

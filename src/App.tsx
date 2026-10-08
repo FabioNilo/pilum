@@ -19,9 +19,10 @@ export default function App() {
             <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
               <div>
                 <p className="eyebrow">Soluções por nicho</p>
-                <h2 className="mt-2 max-w-2xl text-3xl uppercase sm:text-5xl">Sistemas reais, já em uso por pequenos negócios</h2>
+                <h2 className="mt-2 max-w-2xl text-3xl uppercase sm:text-5xl">Soluções prontas para adaptar ao seu negócio, testadas em restaurantes e delivery</h2>
                 <p className="mt-3 max-w-2xl text-ink-soft">
-                  Cada solução nasceu de um problema concreto de um cliente. Veja as telas e imagine com a sua marca.
+                  {/* TODO(fabio): se quiser dizer "em uso" também nos outros nichos, confirme antes quais clientes autorizam. */}
+                  Veja as telas e imagine com a sua marca.
                 </p>
               </div>
               <NicheFilter value={niche} onChange={setNiche} />

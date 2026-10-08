@@ -54,7 +54,7 @@ export function ProjectCard({ project, flip }: { project: ProjectWithSlides; fli
       </div>
 
       <div className={flip ? "min-w-0 lg:order-1" : "min-w-0"}>
-        <Slideshow slides={p.slides} title={p.title} videoUrl={p.videoUrl} />
+        <Slideshow slides={p.slides} title={p.title} videoUrl={p.videoUrl} label={p.demoLabel} />
       </div>
     </article>
   );

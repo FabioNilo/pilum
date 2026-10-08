@@ -195,9 +195,16 @@ export function HowItWorks() {
 
 const diffs = [
   { icon: MessageCircle, title: "WhatsApp integrado", text: "Pedidos, agendamentos e contato onde seu cliente já está." },
-  { icon: Wallet, title: "Sem comissão por venda", text: "O sistema é seu. Pix e cartão caem direto na sua conta." },
+  {
+    icon: Wallet,
+    title: "Sem comissão da Pilum",
+    text: "Sem comissão da Pilum sobre suas vendas. A taxa da operadora de pagamento (Pix/cartão) é cobrada à parte pela operadora.",
+  },
+  // TODO(fabio): confirmar o que realmente fica com o cliente (dados, domínio, painel, contas de hospedagem).
+  { icon: ShieldCheck, title: "Tudo fica com você", text: "Seus dados, seu domínio e seu painel ficam com você." },
   { icon: Smartphone, title: "Funciona no celular", text: "Para o cliente e para você, até instalado como app." },
   { icon: BarChart3, title: "Números na mão", text: "Vendas, ticket médio, inadimplência e relatórios em PDF." },
+  // TODO(fabio): confirmar que LGPD e proteção de dados estão realmente implementadas, principalmente nos nichos de saúde.
   { icon: ShieldCheck, title: "Dados protegidos", text: "Acesso com senha, perfis de equipe e adequação à LGPD." },
 ];
 
@@ -207,7 +214,7 @@ export function Differentials() {
       <div className="container">
         <p className="eyebrow">Por que trabalhar comigo</p>
         <h2 className="mt-2 max-w-2xl text-3xl uppercase sm:text-5xl">Feito para quem toca o negócio no dia a dia</h2>
-        <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
+        <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {diffs.map(({ icon: Icon, title, text }) => (
             <div key={title} className="rounded-2xl border border-paper-line bg-paper-card p-5">
               <Icon className="h-6 w-6 text-accent" aria-hidden />

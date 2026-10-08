@@ -4,9 +4,9 @@ import { ChevronLeft, ChevronRight, Expand, ImageOff, X } from "lucide-react";
 import type { Slide } from "@/data/projects";
 import { DeviceFrame } from "./DeviceFrame";
 
-type Props = { slides: Slide[]; title: string; videoUrl?: string };
+type Props = { slides: Slide[]; title: string; videoUrl?: string; label?: string };
 
-export function Slideshow({ slides, title, videoUrl }: Props) {
+export function Slideshow({ slides, title, videoUrl, label }: Props) {
   const [emblaRef, embla] = useEmblaCarousel({ loop: true });
   const [index, setIndex] = useState(0);
   const [zoom, setZoom] = useState<number | null>(null);
@@ -66,6 +66,12 @@ export function Slideshow({ slides, title, videoUrl }: Props) {
           ))}
         </div>
       </div>
+
+      {label && (
+        <span className="pointer-events-none absolute right-3 top-3 z-10 rounded-full bg-ink/80 px-2.5 py-1 font-mono text-[0.65rem] font-medium uppercase tracking-[0.12em] text-paper backdrop-blur">
+          {label}
+        </span>
+      )}
 
       {total > 1 && (
         <>
