@@ -231,10 +231,10 @@ export function HowItWorks() {
           <h3 className="font-mono text-xs font-bold uppercase tracking-[0.2em] text-accent-bright">Como funciona o valor</h3>
           <ul className="mt-4 space-y-2.5 text-paper/80">
             {/* TODO(fabio): confirmar o modelo (implantação única + mensalidade) e o que está incluso em cada parte. */}
-            <li>Implantação única + mensalidade, sem comissão sobre suas vendas.</li>
+            <li>Sem taxa de implantação, apenas mensalidade. Não há comissão sobre suas vendas.</li>
             {/* TODO(fabio): confirmar o que realmente fica com o cliente (dados, domínio, painel, contas de hospedagem). */}
-            <li>Seus dados, seu domínio e seu painel ficam com você.</li>
-            <li>A taxa da operadora de pagamento (Pix/cartão) é cobrada à parte pela própria operadora.</li>
+            <li>Você pode comprar um domínio ou usar um domínio gratuito.</li>
+            <li>A taxa da operadora de pagamento (Pix/cartão) é definida pela operadora contratada.</li>
           </ul>
         </div>
       </div>
