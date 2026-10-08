@@ -8,5 +8,5 @@ export const site = {
   // Somente dígitos, com DDI e DDD. Ex.: "5573999999999"
   whatsapp: "5573999099040",
   email: "fabionilosoares@gmail.com",
-  instragram: "fabionilosoares",
+  instagram: "fabionilosoares",
 };

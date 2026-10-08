@@ -4,7 +4,7 @@ import {
   ClipboardList,
   FlaskConical,
   FileSpreadsheet,
-  Github,
+  Instagram,
   LifeBuoy,
   Mail,
   MapPin,
@@ -321,9 +321,9 @@ export function CtaFooter() {
               </a>
             </li>
             <li>
-              <a className="flex items-center gap-1.5 hover:text-paper" href={site.github} target="_blank" rel="noopener noreferrer">
-                <Github className="h-4 w-4" aria-hidden />
-                GitHub
+              <a className="flex items-center gap-1.5 hover:text-paper" href={`https://instagram.com/${site.instagram}`} target="_blank" rel="noopener noreferrer">
+                <Instagram className="h-4 w-4" aria-hidden />
+                @{site.instagram}
               </a>
             </li>
           </ul>
