@@ -1,17 +1,20 @@
 import {
   ArrowDown,
-  BarChart3,
   Bike,
   ClipboardList,
+  FlaskConical,
   FileSpreadsheet,
   Github,
+  LifeBuoy,
   Mail,
   MapPin,
   MessageCircle,
   MessagesSquare,
+  Palette,
   Percent,
   ShieldCheck,
   Smartphone,
+  UserRound,
   Wallet,
 } from "lucide-react";
 import { site } from "@/config";
@@ -229,19 +232,28 @@ export function HowItWorks() {
   );
 }
 
-const diffs = [
-  { icon: MessageCircle, title: "WhatsApp integrado", text: "Pedidos, agendamentos e contato onde seu cliente já está." },
+const whyMe = [
   {
-    icon: Wallet,
-    title: "Sem comissão da Pilum",
-    text: "Sem comissão da Pilum sobre suas vendas. A taxa da operadora de pagamento (Pix/cartão) é cobrada à parte pela operadora.",
+    icon: UserRound,
+    title: "Atendimento direto comigo, de Ilhéus e Itabuna",
+    text: "Você fala com quem desenvolve o sistema, sem intermediário.",
   },
-  // TODO(fabio): confirmar o que realmente fica com o cliente (dados, domínio, painel, contas de hospedagem).
-  { icon: ShieldCheck, title: "Tudo fica com você", text: "Seus dados, seu domínio e seu painel ficam com você." },
-  { icon: Smartphone, title: "Funciona no celular", text: "Para o cliente e para você, até instalado como app." },
-  { icon: BarChart3, title: "Números na mão", text: "Vendas, ticket médio, inadimplência e relatórios em PDF." },
-  // TODO(fabio): confirmar que LGPD e proteção de dados estão realmente implementadas, principalmente nos nichos de saúde.
-  { icon: ShieldCheck, title: "Dados protegidos", text: "Acesso com senha, perfis de equipe e adequação à LGPD." },
+  {
+    icon: Palette,
+    title: "Adapto à sua marca e ao seu jeito de trabalhar",
+    text: "Cores, logo e o seu fluxo do dia a dia, não um modelo engessado.",
+  },
+  {
+    icon: FlaskConical,
+    title: "Você testa o protótipo antes de decidir",
+    text: "Só segue em frente se gostar do que viu funcionando.",
+  },
+  {
+    // TODO(fabio): confirmar o suporte por WhatsApp e, se for citar, o prazo de resposta que você consegue cumprir sempre.
+    icon: LifeBuoy,
+    title: "Suporte por WhatsApp",
+    text: "Dúvidas do dia a dia resolvidas por mensagem.",
+  },
 ];
 
 export function Differentials() {
@@ -249,12 +261,12 @@ export function Differentials() {
     <section className="section">
       <div className="container">
         <p className="eyebrow">Por que trabalhar comigo</p>
-        <h2 className="mt-2 max-w-2xl text-3xl uppercase sm:text-5xl">Feito para quem toca o negócio no dia a dia</h2>
-        <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {diffs.map(({ icon: Icon, title, text }) => (
+        <h2 className="mt-2 max-w-2xl text-3xl uppercase sm:text-5xl">Atendimento de perto, de quem desenvolve</h2>
+        <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          {whyMe.map(({ icon: Icon, title, text }) => (
             <div key={title} className="rounded-2xl border border-paper-line bg-paper-card p-5">
               <Icon className="h-6 w-6 text-accent" aria-hidden />
-              <h3 className="mt-3 font-bold">{title}</h3>
+              <h3 className="mt-3 font-bold leading-snug">{title}</h3>
               <p className="mt-1 text-sm text-ink-mute">{text}</p>
             </div>
           ))}

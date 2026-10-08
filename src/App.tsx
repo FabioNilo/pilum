@@ -2,6 +2,7 @@ import { useState } from "react";
 import { track } from "@/lib/track";
 import { primaryNiches, projects, type NicheId } from "@/data/projects";
 import { ProjectCard } from "@/components/ProjectCard";
+import { Testimonials } from "@/components/Testimonials";
 import { CtaFooter, Differentials, Header, Hero, HowItWorks, NicheFilter, PainStrip } from "@/components/Sections";
 
 export default function App() {
@@ -65,6 +66,7 @@ export default function App() {
           </div>
         </section>
 
+        <Testimonials />
         <HowItWorks />
         <Differentials />
       </main>
