@@ -1,6 +1,6 @@
 import { ArrowUpRight, Check, MessageCircle } from "lucide-react";
-import type { ProjectWithSlides } from "@/data/projects";
-import { whatsappLink } from "@/lib/whatsapp";
+import { primaryNiches, type ProjectWithSlides } from "@/data/projects";
+import { waProps } from "@/lib/whatsapp";
 import { Slideshow } from "./Slideshow";
 
 type Props = {
@@ -12,6 +12,8 @@ type Props = {
 
 export function ProjectCard({ project, flip, compact = false }: Props) {
   const p = project;
+  // Nichos de comida: "no meu restaurante". Os demais: convite mais geral.
+  const food = primaryNiches.includes(p.niche);
   return (
     <article
       id={p.id}
@@ -56,12 +58,15 @@ export function ProjectCard({ project, flip, compact = false }: Props) {
         <div className="mt-6 flex flex-wrap gap-3">
           <a
             className="btn-primary"
-            href={whatsappLink(`Olá, Fabio! Vi a solução "${p.title}" no seu portfólio e quero algo parecido para o meu negócio.`)}
-            target="_blank"
-            rel="noopener noreferrer"
+            {...waProps(
+              food
+                ? `Olá, Fabio! Vi "${p.title}" no seu site e quero ver como ficaria no meu negócio.`
+                : `Olá, Fabio! Vi "${p.title}" no seu site e quero conversar sobre isso.`,
+              `card-${p.id}`,
+            )}
           >
             <MessageCircle className="h-4 w-4" aria-hidden />
-            Quero um desse
+            {food ? "Ver como ficaria no meu restaurante" : "Quero conversar sobre isso"}
           </a>
           {p.demoUrl && (
             <a className="btn-ghost" href={p.demoUrl} target="_blank" rel="noopener noreferrer">

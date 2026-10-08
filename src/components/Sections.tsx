@@ -12,14 +12,13 @@ import {
   MessagesSquare,
   Palette,
   Percent,
-  ShieldCheck,
   Smartphone,
   UserRound,
   Wallet,
 } from "lucide-react";
 import { site } from "@/config";
 import { niches, type NicheId, type ProjectWithSlides } from "@/data/projects";
-import { defaultMessage, whatsappLink } from "@/lib/whatsapp";
+import { defaultMessage, waProps } from "@/lib/whatsapp";
 import { DeviceFrame } from "./DeviceFrame";
 import { PilumLogo } from "./Logo";
 
@@ -37,7 +36,7 @@ export function Header() {
           <a href="#como-funciona" className="hidden rounded-full px-3 py-2 text-ink-soft hover:text-ink sm:block">
             Como funciona
           </a>
-          <a href={whatsappLink(defaultMessage)} target="_blank" rel="noopener noreferrer" className="btn-dark py-2">
+          <a {...waProps(defaultMessage, "header")} className="btn-dark py-2">
             <MessageCircle className="h-4 w-4" aria-hidden />
             <span>Conversar</span>
           </a>
@@ -69,7 +68,7 @@ export function Hero({ projects }: { projects: ProjectWithSlides[] }) {
             e você acompanha tudo pelo celular.
           </p>
           <div className="mt-8 flex flex-wrap gap-3">
-            <a className="btn-primary" href={whatsappLink(defaultMessage)} target="_blank" rel="noopener noreferrer">
+            <a className="btn-primary" {...waProps(defaultMessage, "hero")}>
               <MessageCircle className="h-4 w-4" aria-hidden />
               Falar no WhatsApp
             </a>
@@ -208,7 +207,7 @@ export function NicheFilter({ value, onChange }: { value: NicheId | "todos"; onC
 
 const steps = [
   { title: "Conversa", text: "Você me conta como o negócio funciona hoje e onde perde tempo ou dinheiro." },
-  { title: "Protótipo", text: "Adapto uma solução pronta ao seu nicho, com a sua marca, e você testa antes." },
+  { title: "Protótipo", text: "Adapto uma solução pronta ao seu negócio, com a sua marca. Você testa antes de decidir." },
   { title: "No ar", text: "Publico, treino sua equipe e acompanho os primeiros dias de uso." },
 ];
 
@@ -227,6 +226,17 @@ export function HowItWorks() {
             </li>
           ))}
         </ol>
+
+        <div className="mt-8 rounded-2xl border border-paper/10 p-6">
+          <h3 className="font-mono text-xs font-bold uppercase tracking-[0.2em] text-accent-bright">Como funciona o valor</h3>
+          <ul className="mt-4 space-y-2.5 text-paper/80">
+            {/* TODO(fabio): confirmar o modelo (implantação única + mensalidade) e o que está incluso em cada parte. */}
+            <li>Implantação única + mensalidade, sem comissão sobre suas vendas.</li>
+            {/* TODO(fabio): confirmar o que realmente fica com o cliente (dados, domínio, painel, contas de hospedagem). */}
+            <li>Seus dados, seu domínio e seu painel ficam com você.</li>
+            <li>A taxa da operadora de pagamento (Pix/cartão) é cobrada à parte pela própria operadora.</li>
+          </ul>
+        </div>
       </div>
     </section>
   );
@@ -285,12 +295,7 @@ export function CtaFooter() {
           <p className="mx-auto mt-3 max-w-xl text-white/85">
             Me chame no WhatsApp, conte como funciona hoje e eu mostro como a solução ficaria para você. Sem compromisso.
           </p>
-          <a
-            className="btn mt-8 bg-white text-accent-ink hover:bg-paper"
-            href={whatsappLink(defaultMessage)}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
+          <a className="btn mt-8 bg-white text-accent-ink hover:bg-paper" {...waProps(defaultMessage, "rodape")}>
             <MessageCircle className="h-4 w-4" aria-hidden />
             Falar no WhatsApp
           </a>
