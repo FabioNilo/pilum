@@ -1,12 +1,14 @@
 import shots from "./shots.json";
 
-export type NicheId = "restaurantes" | "saude" | "condominios" | "alimentacao";
+export type NicheId = "restaurantes" | "saude" | "condominios" | "alimentacao" | "turismo" | "advocacia";
 
 export const niches: { id: NicheId; label: string }[] = [
   { id: "restaurantes", label: "Restaurantes e delivery" },
   { id: "alimentacao", label: "Marmitas e congelados" },
   { id: "saude", label: "Clínicas e consultórios" },
   { id: "condominios", label: "Condomínios" },
+  { id: "turismo", label: "Passeios e turismo" },
+  { id: "advocacia", label: "Advocacia" },
 ];
 
 export type Slide = {
@@ -269,6 +271,39 @@ const base: Omit<Project, "demoLabel">[] = [
       "Entregue a prestação de contas em PDF, pronta para a assembleia.",
     ],
   },
+  {
+    id: "reservas-passeios",
+    niche: "turismo",
+    audience: "Passeios, turismo e experiências com hora marcada",
+    title: "Reserva online de passeios, com agenda e controle de vagas",
+    whatIs:
+      "Um site onde o cliente escolhe o passeio, a data e faz a reserva, mais uma tela de controle onde você vê as saídas do dia, quem vai em cada uma e o que já foi pago.",
+    problem: "Reserva por mensagem, lista de passageiros anotada à mão e vaga que ninguém sabe quantas restam.",
+    solution: "O cliente reserva sozinho, em etapas, e a equipe confere a agenda e a lista de participantes de cada saída.",
+    benefits: [
+      "O cliente escolhe o passeio, a data e reserva sem precisar te chamar.",
+      "Veja quantas vagas restam em cada saída e quem está confirmado ou aguardando pagamento.",
+      "Tenha a lista de participantes de cada saída pronta para conferir no dia.",
+      "Fidelize quem volta sempre com planos de associado e cotas por semana.",
+    ],
+    // TODO(fabio): o pagamento está em modo de teste (PAYMENT_PROVIDER=mock). Não prometer cobrança online (Pix/cartão) antes de integrar um meio de pagamento real.
+  },
+  {
+    id: "escritorio-advocacia",
+    niche: "advocacia",
+    audience: "Escritórios de advocacia",
+    title: "Site de captação com formulário que envia o caso pelo WhatsApp",
+    whatIs:
+      "Um site para o escritório se apresentar, tirar as dúvidas mais comuns e receber o pedido de análise: o cliente preenche o formulário e o caso chega pronto no WhatsApp do advogado.",
+    problem: "Cliente que chega sem contexto e as mesmas dúvidas respondidas uma a uma.",
+    solution: "Um site que explica as áreas de atuação, responde as perguntas mais comuns e leva o cliente a descrever o caso antes de chamar.",
+    benefits: [
+      "O caso chega no WhatsApp com nome, contato e descrição, sem troca de mensagens para descobrir o básico.",
+      "As dúvidas mais comuns ficam respondidas no próprio site, antes do primeiro contato.",
+      "Áreas de atuação, formação e contato reunidos, e a página abre bem no celular.",
+    ],
+    // TODO(fabio): conteúdo jurídico segue as regras de publicidade da OAB. Revisar com o cliente antes de divulgar (ex.: depoimentos e promessa de resultado são vedados).
+  },
 ];
 
 const shotMap = shots as Record<string, Slide[]>;
@@ -278,7 +313,7 @@ const desktopFirst = (slides: Slide[]) => [...slides].sort((a, b) => Number(a.de
 
 // Todos os prints usam dados fictícios. Clínicas, psicólogos e condomínios são soluções prontas para implantar,
 // ainda sem clientes autorizados para citar, então levam o rótulo de demonstração.
-const demoLabel = (niche: NicheId) => (niche === "saude" || niche === "condominios" ? "Demonstração · dados fictícios" : "Dados fictícios");
+const demoLabel = (niche: NicheId) => (primaryNiches.includes(niche) ? "Dados fictícios" : "Demonstração · dados fictícios");
 
 /** Nichos em destaque; os demais aparecem na seção "Também desenvolvo para". */
 export const primaryNiches: NicheId[] = ["restaurantes", "alimentacao"];
@@ -294,7 +329,7 @@ export const tierChooser: { ifYou: string; projectId: string; tierName: string }
 ];
 
 // Ordem na página: opções dos restaurantes (Essencial, Salão e delivery, Completo), marmitas; depois clínicas, psicólogos, condomínios.
-const ORDER = ["delivery-proprio", "restaurante-mesa", "plataforma-restaurantes", "marmitas", "clinica-odonto", "consultorio-psi", "condominio"];
+const ORDER = ["delivery-proprio", "restaurante-mesa", "plataforma-restaurantes", "marmitas", "clinica-odonto", "consultorio-psi", "condominio", "reservas-passeios", "escritorio-advocacia"];
 
 export const projects = base.map((p) => ({ ...p, demoLabel: demoLabel(p.niche), slides: desktopFirst(shotMap[p.id] ?? []) })).sort((a, b) => ORDER.indexOf(a.id) - ORDER.indexOf(b.id));
 export type ProjectWithSlides = (typeof projects)[number];

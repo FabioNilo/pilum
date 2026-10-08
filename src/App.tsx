@@ -57,7 +57,7 @@ export default function App() {
               <div className={main.length > 0 ? "mt-16 border-t border-paper-line pt-12" : "mt-10"}>
                 <p className="eyebrow">Também desenvolvo para</p>
                 <p className="mt-2 max-w-2xl text-ink-soft">
-                  A mesma base serve para outros negócios de atendimento. Estas são demonstrações prontas para adaptar.
+                  A mesma base serve para outros negócios de atendimento e de reservas. Estas são demonstrações prontas para adaptar.
                 </p>
                 <div className="mt-6 space-y-6">
                   {others.map((p, i) => (

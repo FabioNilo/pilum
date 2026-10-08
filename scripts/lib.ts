@@ -62,6 +62,7 @@ export const GLOBAL_REPLACE: [string | RegExp, string][] = [
   [/Mileide/gi, "Exemplo"],
   [/Ilh[ée]us|Itabuna/g, "Sua Cidade"],
   [/neidemarmitafit\.com\.br|nossobistro\.vercel\.app/gi, "seunegocio.com.br"],
+  [/\(73\)\s*9\d{4}-?\d{4}/g, "(00) 90000-0000"],
 ];
 
 export const VIEWPORTS: Record<Device, { width: number; height: number; deviceScaleFactor: number; isMobile: boolean; hasTouch: boolean }> = {
@@ -248,3 +249,17 @@ export async function newContext(browser: Browser, device: Device) {
 const PROD_DATA_HOSTS = (url: URL) =>
   /\.easypanel\.host$|\.neon\.tech$|\.lovable\.app$|\.vercel\.app$/.test(url.hostname) ||
   (/\.supabase\.co$/.test(url.hostname) && !url.pathname.startsWith("/storage/v1/object/public/"));
+
+/** Dados de clientes que nunca podem aparecer num print. Retorna o que sobrou na página depois da anonimização. */
+const LEAK = /nosso\s*bistr|neide\s*gama|pasta\s*brasiliana|florecer|mileide|cordeiro|pontal|ilh[ée]us\s*canoe|na[\s-]*kai|fraga\s*center|59\.?899|98859|\(73\)\s*9\d{4}|ilh[ée]us|itabuna/i;
+
+export async function leakCheck(page: Page): Promise<string[]> {
+  const source = LEAK.source;
+  return page.evaluate((src) => {
+    const re = new RegExp(src, "i");
+    const texts = [document.body.innerText, document.title, ...[...document.querySelectorAll("[placeholder],[alt],[title],[aria-label]")].flatMap((e) => ["placeholder", "alt", "title", "aria-label"].map((a) => e.getAttribute(a) ?? ""))];
+    const hits = new Set<string>();
+    for (const t of texts) for (const line of t.split("\n")) if (re.test(line)) hits.add(line.trim().slice(0, 80));
+    return [...hits];
+  }, source);
+}

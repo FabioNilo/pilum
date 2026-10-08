@@ -6,6 +6,7 @@ import { marmitasActions } from "./fixtures/marmitas";
 
 const EDLA = "C:/Users/cippa/Desktop/Edla";
 const NEIDE = "C:/Users/cippa/OneDrive/Documentos/neide";
+const CANOA = "C:/Users/cippa/OneDrive/Área de Trabalho/react-projects/canoa/na-kai-canoa";
 const VITE = "npx vite --port {port} --strictPort --host 127.0.0.1";
 
 async function fillLogin(page: Page, user: string, pass: string, userSel = 'input[type="email"], input[name="username"], input#username, input#email', passSel = 'input[type="password"]') {
@@ -275,6 +276,106 @@ export const targets: Target[] = [
       await shot(d, "relatorio", "Relatório mensal pronto para prestar contas, em PDF");
       await goto(d, `/comprovante/${firstPaidRevenueId}`);
       await shot(d, "comprovante", "Recibo numerado com valor por extenso");
+    },
+  },
+  {
+    // Site de captação de um escritório (Vite + React). O formulário só é preenchido, nunca enviado
+    // (o envio abre o WhatsApp do escritório). Dados pessoais e fotos da advogada são trocados/borrados.
+    id: "escritorio-advocacia",
+    cwd: "C:/get/advocia",
+    cmd: VITE,
+    port: 5209,
+    replace: [
+      [/(?:Dra?\.\s*)?Mileide\s+Cordeiro\s+Advocacia/gi, "Escritório Exemplo Advocacia"],
+      [/(?:Dra?\.\s*)?Mileide\s+Cordeiro/gi, "Dra. Exemplo"],
+      [/OAB\s*\/?\s*BA\s*:?\s*59\.?899/gi, "OAB/XX 00000"],
+      [/\(73\)\s*98859-9019/g, "(00) 90000-0000"],
+      [/mileideadvogada@gmail\.com/gi, "contato@exemplo.com"],
+      [/Faculdade de Ilh[ée]us/gi, "Faculdade de Direito"],
+      [/Edif[íi]cio Comercial Fraga Center,?\s*\d*/gi, "Edifício Comercial Exemplo, 123"],
+    ],
+    css: `img[src*="mileide"], img[src*="cordeiro"] { filter: blur(22px) saturate(1.05) !important; transform: scale(1.12) !important; }`,
+    async run({ page, goto, shot }) {
+      const fill = async (p: Page) => {
+        await p.locator('input[name="nome"]').first().fill("Maria Exemplo");
+        await p.locator('input[name="contato"]').first().fill("(00) 90000-0000");
+        await p.locator('textarea[name="caso"]').first().fill("Tenho 62 anos e quero saber se já posso me aposentar.");
+      };
+      const toSection = async (p: Page, text: string) => {
+        await p.locator("section", { has: p.getByText(text, { exact: false }) }).first().evaluate((el) => el.scrollIntoView({ block: "start" }));
+        await p.waitForTimeout(500);
+      };
+
+      const d = await page("desktop");
+      await goto(d, "/");
+      await fill(d);
+      await shot(d, "hero", "Formulário de análise: o caso do cliente chega pronto no WhatsApp do escritório");
+      await toSection(d, "Nossos Serviços");
+      await shot(d, "areas", "Áreas de atuação apresentadas com clareza, com o que está incluso em cada uma");
+      await toSection(d, "Dúvidas Frequentes");
+      await d.getByRole("button", { name: /Quanto tempo de contribuição/i }).first().click();
+      await d.waitForTimeout(500);
+      await shot(d, "duvidas", "Perguntas frequentes que respondem as dúvidas antes do primeiro contato");
+      await toSection(d, "Entre em Contato");
+      await shot(d, "contato", "Contato, endereço e horário de atendimento num só lugar");
+
+      const m = await page("mobile");
+      await goto(m, "/");
+      await shot(m, "hero-mobile", "No celular, o cliente descreve o caso e envia em poucos toques");
+      await toSection(m, "Nossos Serviços");
+      await shot(m, "areas-mobile", "Áreas de atuação no celular");
+    },
+  },
+  {
+    // Sistema de reservas de passeios (Next.js + Prisma) contra o Postgres local "canoa"
+    // (seed do projeto + scripts/local/canoa-demo.sql). Variáveis do .env do projeto sobrescritas.
+    id: "reservas-passeios",
+    cwd: CANOA,
+    cmd: "npx next dev -p {port} -H 127.0.0.1",
+    port: 5208,
+    env: {
+      DATABASE_URL: "postgresql://postgres:postgres@127.0.0.1:55432/canoa?schema=public",
+      AUTH_SECRET: "local-shots-auth-secret-0123456789abcdef",
+      NEXTAUTH_URL: "http://127.0.0.1:5208",
+      ADMIN_EMAIL: "admin@exemplo.com",
+      ADMIN_PASSWORD: "demo12345",
+      PAYMENT_PROVIDER: "mock",
+      PAYMENT_WEBHOOK_SECRET: "mock-local",
+    },
+    replace: [
+      [/ILH[ÉE]US\s+CANOE\s+VA['’]?A/gi, "SUA MARCA"],
+      [/Pontal\s+V[Aa]['’]?[Aa]/gi, "Sua Marca"],
+      [/Na[\s-]*Kai/gi, "Sua Marca"],
+    ],
+    // Fotos do cliente mostram pessoas reais: ficam borradas (só a cor do mar aparece). O fundo da home vira um degradê.
+    css: `img[src*="experiences"] { filter: blur(18px) saturate(1.1); transform: scale(1.15); }
+      .hero-ocean, .canoe-sunrise { background-image: linear-gradient(180deg, #0b4f7a 0%, #0a6f9a 45%, #031b3a 100%) !important; }`,
+    async run({ page, goto, shot }) {
+      const m = await page("mobile");
+      await goto(m, "/");
+      await shot(m, "inicio-mobile", "Site de passeios com a sua marca, pronto para o celular");
+      await goto(m, "/experiencias/por-do-sol");
+      await shot(m, "passeio-mobile", "Página de cada passeio, com preço, regras e botão de reservar");
+
+      const d = await page("desktop");
+      await goto(d, "/experiencias");
+      await shot(d, "catalogo", "Catálogo de passeios com foto, preço e descrição");
+      await goto(d, "/reserva");
+      await shot(d, "reserva", "Reserva em etapas: passeio, data, dados, pagamento e revisão");
+
+      await goto(d, "/associado/login");
+      await fillLogin(d, "admin@exemplo.com", "demo12345", 'input[type="email"]', 'input[type="password"]');
+      await d.waitForURL((u) => !u.pathname.includes("/login"), { timeout: 60_000 });
+      await goto(d, "/admin");
+      await shot(d, "painel", "Painel do dia: reservas, vagas e faturamento");
+      await goto(d, "/admin/passeios");
+      await shot(d, "agenda", "Agenda de saídas, com vagas ocupadas e canoas de cada passeio");
+      await goto(d, "/admin/participantes");
+      await shot(d, "participantes", "Lista de participantes de cada saída, para a equipe conferir no dia");
+      await goto(d, "/admin/associados");
+      await shot(d, "associados", "Associados com plano, cotas da semana e mensalidade em dia ou em atraso");
+      await goto(d, "/admin/caixa");
+      await shot(d, "caixa", "Caixa com os pagamentos recebidos");
     },
   },
   {

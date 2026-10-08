@@ -227,5 +227,84 @@
       "caption": "Recibo numerado com valor por extenso",
       "device": "desktop"
     }
+  ],
+  "reservas-passeios": [
+    {
+      "src": "/shots/reservas-passeios/01-inicio-mobile.webp",
+      "caption": "Site de passeios com a sua marca, pronto para o celular",
+      "device": "mobile"
+    },
+    {
+      "src": "/shots/reservas-passeios/02-passeio-mobile.webp",
+      "caption": "Página de cada passeio, com preço, regras e botão de reservar",
+      "device": "mobile"
+    },
+    {
+      "src": "/shots/reservas-passeios/03-catalogo.webp",
+      "caption": "Catálogo de passeios com foto, preço e descrição",
+      "device": "desktop"
+    },
+    {
+      "src": "/shots/reservas-passeios/04-reserva.webp",
+      "caption": "Reserva em etapas: passeio, data, dados, pagamento e revisão",
+      "device": "desktop"
+    },
+    {
+      "src": "/shots/reservas-passeios/05-painel.webp",
+      "caption": "Painel do dia: reservas, vagas e faturamento",
+      "device": "desktop"
+    },
+    {
+      "src": "/shots/reservas-passeios/06-agenda.webp",
+      "caption": "Agenda de saídas, com vagas ocupadas e canoas de cada passeio",
+      "device": "desktop"
+    },
+    {
+      "src": "/shots/reservas-passeios/07-participantes.webp",
+      "caption": "Lista de participantes de cada saída, para a equipe conferir no dia",
+      "device": "desktop"
+    },
+    {
+      "src": "/shots/reservas-passeios/08-associados.webp",
+      "caption": "Associados com plano, cotas da semana e mensalidade em dia ou em atraso",
+      "device": "desktop"
+    },
+    {
+      "src": "/shots/reservas-passeios/09-caixa.webp",
+      "caption": "Caixa com os pagamentos recebidos",
+      "device": "desktop"
+    }
+  ],
+  "escritorio-advocacia": [
+    {
+      "src": "/shots/escritorio-advocacia/01-hero.webp",
+      "caption": "Formulário de análise: o caso do cliente chega pronto no WhatsApp do escritório",
+      "device": "desktop"
+    },
+    {
+      "src": "/shots/escritorio-advocacia/02-areas.webp",
+      "caption": "Áreas de atuação apresentadas com clareza, com o que está incluso em cada uma",
+      "device": "desktop"
+    },
+    {
+      "src": "/shots/escritorio-advocacia/03-duvidas.webp",
+      "caption": "Perguntas frequentes que respondem as dúvidas antes do primeiro contato",
+      "device": "desktop"
+    },
+    {
+      "src": "/shots/escritorio-advocacia/04-contato.webp",
+      "caption": "Contato, endereço e horário de atendimento num só lugar",
+      "device": "desktop"
+    },
+    {
+      "src": "/shots/escritorio-advocacia/05-hero-mobile.webp",
+      "caption": "No celular, o cliente descreve o caso e envia em poucos toques",
+      "device": "mobile"
+    },
+    {
+      "src": "/shots/escritorio-advocacia/06-areas-mobile.webp",
+      "caption": "Áreas de atuação no celular",
+      "device": "mobile"
+    }
   ]
 }

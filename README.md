@@ -67,6 +67,22 @@ npx prisma migrate deploy && npx tsx prisma/seed.ts
 docker exec -i shots-pg psql -U postgres -d plataforma < C:/get/portfolio-landing/scripts/local/plataforma-demo.sql
 ```
 
+### Escritório de advocacia e reservas de passeios
+
+```bash
+# Advocacia (Vite): só instalar as dependências do projeto, sem alterar o package-lock
+cd C:/get/advocia && npm ci
+
+# Passeios (Next.js + Prisma): banco próprio e dados fictícios
+docker exec shots-pg psql -U postgres -c "create database canoa;"
+cd "C:/Users/cippa/OneDrive/Área de Trabalho/react-projects/canoa/na-kai-canoa"
+export DATABASE_URL="postgresql://postgres:postgres@127.0.0.1:55432/canoa?schema=public" AUTH_SECRET=local-shots-auth-secret-0123456789abcdef   NEXTAUTH_URL=http://127.0.0.1:5208 ADMIN_EMAIL=admin@exemplo.com ADMIN_PASSWORD=demo12345 PAYMENT_PROVIDER=mock PAYMENT_WEBHOOK_SECRET=mock-local
+npx prisma migrate deploy && npx prisma db seed
+docker exec -i shots-pg psql -U postgres -d canoa < C:/get/portfolio-landing/scripts/local/canoa-demo.sql
+```
+
+Cuidados de anonimização desses dois: as fotos reais (advogada e pessoas nos passeios) saem **borradas** pelo CSS do alvo, e o capturador avisa com `⚠ possível dado de cliente` se algum nome, telefone ou endereço dos clientes sobrar no texto da página antes do print. Se aparecer o aviso, adicione a regra em `replace` do alvo e capture de novo.
+
 Nota: o container `shots-neon-restaurante` foi criado originalmente como `shots-neon`. Os nomes não importam, só as portas.
 
 Para remover tudo depois: `docker rm -f shots-pg shots-neon shots-neon-massas shots-neon-marmitas && docker network rm shots-net`.

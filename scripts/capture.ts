@@ -11,7 +11,7 @@ import { fileURLToPath } from "node:url";
 import { chromium, type BrowserContext, type Page } from "playwright";
 import sharp from "sharp";
 import { startFixtureServer } from "./fixture-server";
-import { anonymize, GLOBAL_REPLACE, installAnonymizer, installTargetRoutes, killTree, newContext, startServer, waitForUrl, type Ctx, type Device, type Shot } from "./lib";
+import { anonymize, GLOBAL_REPLACE, installAnonymizer, leakCheck, installTargetRoutes, killTree, newContext, startServer, waitForUrl, type Ctx, type Device, type Shot } from "./lib";
 import { targets } from "./targets";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
@@ -71,6 +71,8 @@ for (const t of selected) {
       async shot(page, name, caption, opts) {
         const device: Device = (page.viewportSize()?.width ?? 1440) < 800 ? "mobile" : "desktop";
         await anonymize(page, t.css ?? "", t.keepLogos);
+        const leaks = await leakCheck(page);
+        if (leaks.length) console.warn(`  ⚠ possível dado de cliente no print "${name}": ${leaks.join(" | ")}`);
         await page.evaluate(() => document.fonts?.ready);
         await page.waitForTimeout(300);
         const png = await page.screenshot({ fullPage: opts?.fullPage ?? false, animations: "disabled" });
