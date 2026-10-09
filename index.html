@@ -21,8 +21,117 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet" />
       <!-- TODO(fabio): colar aqui o script do Plausible ou do GA4 para medir os cliques de WhatsApp (ver src/lib/track.ts). -->
+
+    <!--
+      Abertura animada: os colchetes < > se desenham, o pilum chega voando e
+      crava no meio ("feito para acertar"). Fica no HTML para aparecer antes do
+      bundle; roda uma vez por sessão e some quando o app já renderizou.
+      Geometria igual à de src/components/Logo.tsx.
+    -->
+    <style>
+      #intro { position: fixed; inset: 0; z-index: 10000; display: flex; align-items: center; justify-content: center; background: #0E1116; animation: piBgIn .3s ease; cursor: pointer; }
+      #intro.pi-out { animation: piBgOut .55s ease forwards; pointer-events: none; }
+      #intro svg * { transform-box: fill-box; }
+      .pi-wrap { display: flex; flex-direction: column; align-items: center; gap: 22px; }
+      .pi-lockup { display: flex; align-items: center; gap: 18px; }
+      .pi-left, .pi-right { stroke-dasharray: 420; stroke-dashoffset: 420; }
+      .pi-left { transform-origin: right; animation: piDraw .5s ease-out .1s forwards, piKickL .35s ease-out 1.15s; }
+      .pi-right { transform-origin: left; animation: piDraw .5s ease-out .22s forwards, piKickR .35s ease-out 1.15s; }
+      .pi-fly { opacity: 0; transform: translate(-190px, 630px); animation: piFly .48s cubic-bezier(.2,.9,.3,1) .7s forwards; }
+      .pi-twang { transform-origin: 100% 0%; animation: piTwang .5s ease-out 1.15s; }
+      .pi-ring { opacity: 0; transform-origin: center; animation: piRing .7s ease-out 1.15s; }
+      .pi-name { opacity: 0; animation: piFadeUp .45s ease-out 1.4s forwards; font: 400 64px/0.95 Anton, Impact, "Arial Narrow Bold", sans-serif; text-transform: uppercase; color: #ECEDEF; font-synthesis: none; }
+      .pi-code { display: flex; justify-content: space-between; margin-top: 6px; font: 700 22px/1 "JetBrains Mono", ui-monospace, monospace; color: #E0483D; }
+      .pi-code span { opacity: 0; animation: piFadeUp .3s ease-out forwards; }
+      .pi-code span:nth-child(1) { animation-delay: 1.6s; }
+      .pi-code span:nth-child(2) { animation-delay: 1.67s; }
+      .pi-code span:nth-child(3) { animation-delay: 1.74s; }
+      .pi-code span:nth-child(4) { animation-delay: 1.81s; }
+      /* Slogan "digitado" letra a letra (19 caracteres), depois de uma pausa no logo. */
+      .pi-tag { font: 500 12px/1 "JetBrains Mono", ui-monospace, monospace; letter-spacing: .3em; text-transform: uppercase; color: rgba(236,237,239,.6); clip-path: inset(0 100% 0 0); animation: piType .7s steps(19, end) 3.35s forwards; }
+
+      @keyframes piDraw { to { stroke-dashoffset: 0; } }
+      /* O dardo vem na direção da própria haste, passa um pouco e assenta. */
+      @keyframes piFly {
+        0% { opacity: 0; transform: translate(-190px, 630px); }
+        15% { opacity: 1; }
+        82% { opacity: 1; transform: translate(5px, -16px); }
+        100% { opacity: 1; transform: none; }
+      }
+      @keyframes piTwang { 25% { transform: rotate(-2.5deg); } 55% { transform: rotate(1.5deg); } 80% { transform: rotate(-.6deg); } 100% { transform: none; } }
+      @keyframes piKickL { 40% { transform: translateX(-14px); } 100% { transform: none; } }
+      @keyframes piKickR { 40% { transform: translateX(14px); } 100% { transform: none; } }
+      @keyframes piRing { 0% { opacity: .9; transform: scale(.35); } 100% { opacity: 0; transform: scale(1.3); } }
+      @keyframes piFadeUp { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+      @keyframes piType { to { clip-path: inset(0 0 0 0); } }
+      @keyframes piBgIn { from { opacity: 0; } to { opacity: 1; } }
+      @keyframes piBgOut { from { opacity: 1; transform: scale(1); } to { opacity: 0; transform: scale(1.04); } }
+
+      @media (max-width: 380px) {
+        .pi-lockup svg { width: 96px; height: 96px; }
+        .pi-name { font-size: 52px; }
+        .pi-code { font-size: 18px; }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        #intro svg *, .pi-name, .pi-code span, .pi-tag { animation: none !important; opacity: 1 !important; transform: none !important; stroke-dashoffset: 0 !important; clip-path: none !important; }
+        .pi-ring { opacity: 0 !important; }
+      }
+    </style>
   </head>
   <body>
+    <div id="intro" aria-hidden="true" title="Toque para pular">
+      <div class="pi-wrap">
+        <div class="pi-lockup">
+          <svg width="120" height="120" viewBox="196 150 568 568" fill="none" xmlns="http://www.w3.org/2000/svg" overflow="visible">
+            <circle class="pi-ring" cx="480" cy="434" r="260" stroke="#E0483D" stroke-width="16" />
+            <g stroke="#ECEDEF" stroke-width="43" stroke-linejoin="miter" stroke-miterlimit="4">
+              <polyline class="pi-left" points="388,313 245,462 388,611" />
+              <polyline class="pi-right" points="572,313 715,462 572,611" />
+            </g>
+            <g class="pi-fly">
+              <g class="pi-twang">
+                <line x1="411" y1="700" x2="536" y2="286" stroke="#ECEDEF" stroke-width="20" />
+                <rect x="-28" y="-14" width="56" height="28" fill="#ECEDEF" transform="translate(490 440) rotate(16.9)" />
+                <polygon points="500,276 565,163 561,294" fill="#E0483D" />
+              </g>
+            </g>
+          </svg>
+          <div>
+            <div class="pi-name">Pilum</div>
+            <div class="pi-code"><span>C</span><span>O</span><span>D</span><span>E</span></div>
+          </div>
+        </div>
+        <div class="pi-tag">Feito para acertar.</div>
+      </div>
+    </div>
+    <script>
+      (function () {
+        var el = document.getElementById("intro");
+        var seen = false;
+        try { seen = sessionStorage.getItem("pi-intro") === "1"; } catch (e) {}
+        if (seen) { el.remove(); return; }
+        try { sessionStorage.setItem("pi-intro", "1"); } catch (e) {}
+
+        var reduced = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
+        var minTime = reduced ? 700 : 4300; // até o slogan terminar de "digitar"
+        var maxTime = 7000;                 // nunca prende o visitante além disso
+        var start = Date.now(), done = false;
+
+        function hide() {
+          if (done) return; done = true;
+          el.classList.add("pi-out");
+          setTimeout(function () { el.remove(); }, 600);
+        }
+        el.addEventListener("click", hide);
+        (function check() {
+          var root = document.getElementById("root");
+          var ready = root && root.children.length > 0;
+          var t = Date.now() - start;
+          if ((t >= minTime && ready) || t >= maxTime) hide();
+          else setTimeout(check, 150);
+        })();
+      })();
+    </script>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
