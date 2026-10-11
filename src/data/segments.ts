@@ -103,6 +103,8 @@ export type Segment = {
   pains: Pain[];
   beforeAfter: {
     heading: string;
+    /** Contador da dor que cai enquanto a pessoa arrasta para o "depois" (ex.: 32 mensagens sem resposta → 0). */
+    meter: { from: number; bad: string; good: string };
     before: Before;
     after: After;
     beforeCaption: string;
@@ -170,6 +172,7 @@ export const segments: Segment[] = [
     ],
     beforeAfter: {
       heading: "Do WhatsApp lotado ao painel organizado",
+      meter: { from: 32, bad: "mensagens sem resposta", good: "Todos os pedidos no painel" },
       before: {
         kind: "chat",
         title: "Pedidos do restaurante",
@@ -293,6 +296,7 @@ export const segments: Segment[] = [
     ],
     beforeAfter: {
       heading: "Do WhatsApp lotado ao painel organizado",
+      meter: { from: 18, bad: "pedidos para conferir", good: "Cada pedido do jeito que o cliente pediu" },
       before: {
         kind: "chat",
         title: "Pedidos da lanchonete",
@@ -419,6 +423,7 @@ export const segments: Segment[] = [
     ],
     beforeAfter: {
       heading: "Do WhatsApp lotado ao painel organizado",
+      meter: { from: 41, bad: "encomendas soltas no WhatsApp", good: "Encomendas prontas para produzir" },
       before: {
         kind: "chat",
         title: "Encomendas de marmita",
@@ -538,6 +543,7 @@ export const segments: Segment[] = [
     ],
     beforeAfter: {
       heading: "Da agenda de papel à agenda organizada",
+      meter: { from: 4, bad: "horários em dúvida", good: "Agenda da semana confirmada" },
       before: {
         kind: "agenda",
         title: "Agenda · terça-feira",
@@ -659,6 +665,7 @@ export const segments: Segment[] = [
     ],
     beforeAfter: {
       heading: "Da planilha quebrada ao painel do condomínio",
+      meter: { from: 10, bad: "células com erro", good: "Contas fechando, sem fórmula" },
       before: {
         kind: "sheet",
         title: "condominio_FINAL_v3 (2).xlsx",
@@ -770,6 +777,7 @@ export const segments: Segment[] = [
     ],
     beforeAfter: {
       heading: "Do “tem vaga?” à reserva organizada",
+      meter: { from: 27, bad: "“tem vaga?” sem resposta", good: "Vagas à vista, o cliente reserva sozinho" },
       before: {
         kind: "chat",
         title: "Reservas · Passeios",
@@ -886,6 +894,7 @@ export const segments: Segment[] = [
     ],
     beforeAfter: {
       heading: "Do “oi, doutor(a)” à sua página profissional",
+      meter: { from: 15, bad: "perguntas repetidas", good: "Apresentação, serviços e contato numa tela" },
       before: {
         kind: "chat",
         title: "WhatsApp profissional",

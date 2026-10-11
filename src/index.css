@@ -26,6 +26,22 @@
   to { opacity: 1; transform: none; }
 }
 
+/* Setas do divisor do antes x depois, "puxando" para os lados. */
+@keyframes nudge-left {
+  0%, 100% { transform: translateX(0); }
+  50% { transform: translateX(-3px); }
+}
+@keyframes nudge-right {
+  0%, 100% { transform: translateX(0); }
+  50% { transform: translateX(3px); }
+}
+
+/* Anel pulsando em volta do divisor até o primeiro toque. */
+@keyframes ring-pulse {
+  0% { box-shadow: 0 10px 25px -5px rgb(14 17 22 / .25), 0 0 0 0 rgb(179 38 30 / .45); }
+  100% { box-shadow: 0 10px 25px -5px rgb(14 17 22 / .25), 0 0 0 14px rgb(179 38 30 / 0); }
+}
+
 /* Célula de planilha com erro piscando no "antes" do condomínio. */
 @keyframes cell-alarm {
   0%, 100% { background-color: rgb(254 226 226); }

@@ -4,13 +4,16 @@ import {
   BarChart3,
   Building2,
   CalendarDays,
-  ChevronsLeftRight,
+  ChevronLeft,
+  ChevronRight,
+  CircleCheck,
   Clock,
   FileSpreadsheet,
   LayoutDashboard,
   MessageCircle,
   Receipt,
   ShieldCheck,
+  TriangleAlert,
   Users,
   Wallet,
 } from "lucide-react";
@@ -27,6 +30,10 @@ const clamp = (v: number) => Math.min(100, Math.max(0, v));
  * (painel de pedidos, agenda semanal, vagas por passeio, financeiro do condomínio ou página pessoal).
  * O divisor é arrastável (mouse, toque ou setas do teclado). Ao entrar na tela, a bagunça "acontece"
  * (mensagens chegando, horários riscados, células com erro), o divisor mostra o "depois" inteiro e volta ao meio.
+ *
+ * Para a pessoa perceber que dá para arrastar: pílula "◀ Arraste ▶" com setas e anel pulsando, e uma balançadinha
+ * do divisor a cada poucos segundos, até o primeiro toque. Enquanto arrasta, o "medidor de bagunça" conta a dor
+ * caindo (ex.: 32 mensagens sem resposta → 0), o "antes" perde a cor e a borda do "depois" brilha.
  */
 export function BeforeAfter({ data }: Props) {
   const section = useReveal<HTMLElement>("[data-reveal]");
@@ -35,17 +42,40 @@ export function BeforeAfter({ data }: Props) {
   const pos = useRef(50);
   const dragging = useRef(false);
   const intro = useRef<gsap.core.Timeline | null>(null);
+  const hint = useRef<gsap.core.Timeline | null>(null);
+  const touched = useRef(false);
+  const meterBox = useRef<HTMLParagraphElement>(null);
+  const meterText = useRef<HTMLSpanElement>(null);
+  const meterBar = useRef<HTMLSpanElement>(null);
+  const { meter } = data;
 
-  // Atualiza direto no DOM (variável CSS), sem re-renderizar o React a cada movimento.
+  // Quanto da dor ainda está à vista: chega a zero um pouco antes do "depois" ocupar tudo.
+  const painLeft = (p: number) => Math.round(meter.from * Math.min(1, Math.max(0, (p - 6) / 88)));
+  const meterLabel = (n: number) => (n === 0 ? meter.good : `${n} ${meter.bad}`);
+
+  // Atualiza direto no DOM (variáveis CSS e textos), sem re-renderizar o React a cada movimento.
   const setPos = (v: number) => {
     pos.current = clamp(v);
-    stage.current?.style.setProperty("--pos", `${pos.current}%`);
+    const st = stage.current?.style;
+    st?.setProperty("--pos", `${pos.current}%`);
+    st?.setProperty("--p", String(pos.current));
     handle.current?.setAttribute("aria-valuenow", String(Math.round(pos.current)));
+    const n = painLeft(pos.current);
+    if (meterText.current) meterText.current.textContent = meterLabel(n);
+    meterBox.current?.setAttribute("data-state", n === 0 ? "good" : "bad");
+    if (meterBar.current) meterBar.current.style.width = `${100 - pos.current}%`;
   };
 
-  const stopIntro = () => {
+  // Primeiro toque: some o convite (anel, "Arraste" e a balançadinha) e a animação de entrada termina na hora.
+  const takeOver = () => {
     intro.current?.progress(1).kill();
     intro.current = null;
+    hint.current?.kill();
+    hint.current = null;
+    if (!touched.current) {
+      touched.current = true;
+      stage.current?.setAttribute("data-touched", "true");
+    }
   };
 
   useGSAP(
@@ -62,6 +92,13 @@ export function BeforeAfter({ data }: Props) {
           .from("[data-order]", { autoAlpha: 0, y: 8, duration: 0.3, stagger: 0.05, ease: "power2.out" }, "<0.3")
           .to(o, { v: 50, duration: 1.1, ease: "power2.inOut", onUpdate: () => setPos(o.v) }, "+=0.9");
         intro.current = tl;
+
+        // Convite para arrastar: o divisor balança um pouco e volta, até a pessoa tocar nele.
+        const h = { v: 50 };
+        const wiggle = gsap.timeline({ paused: true, repeat: -1, repeatDelay: 2.8, defaults: { ease: "power1.inOut", onUpdate: () => setPos(h.v) } });
+        wiggle.to(h, { v: 57, duration: 0.35 }).to(h, { v: 44, duration: 0.5 }).to(h, { v: 50, duration: 0.35 });
+        hint.current = wiggle;
+        tl.call(() => void (!touched.current && wiggle.play()), [], "+=1.5");
         return () => setPos(50);
       });
     },
@@ -78,7 +115,7 @@ export function BeforeAfter({ data }: Props) {
     const next = { ArrowLeft: pos.current - step, ArrowRight: pos.current + step, Home: 0, End: 100 }[e.key];
     if (next === undefined) return;
     e.preventDefault();
-    stopIntro();
+    takeOver();
     setPos(next);
   };
 
@@ -97,13 +134,36 @@ export function BeforeAfter({ data }: Props) {
           Arraste a barra para comparar o seu dia hoje com o seu dia usando o sistema.
         </p>
 
+        {/* Medidor de bagunça: a dor cai enquanto o "depois" aparece. */}
+        <div data-reveal className="mt-8 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between" aria-hidden>
+          <p
+            ref={meterBox}
+            data-state="bad"
+            className="group/meter inline-flex items-center gap-2 self-start rounded-full px-3 py-1.5 text-sm font-semibold transition-colors duration-300 data-[state=bad]:bg-red-50 data-[state=good]:bg-emerald-600 data-[state=bad]:text-red-700 data-[state=good]:text-white"
+          >
+            <TriangleAlert className="h-4 w-4 shrink-0 group-data-[state=good]/meter:hidden" />
+            <CircleCheck className="hidden h-4 w-4 shrink-0 group-data-[state=good]/meter:block" />
+            <span ref={meterText}>{meterLabel(painLeft(50))}</span>
+          </p>
+          <span className="flex items-center gap-2 font-mono text-[0.68rem] font-bold uppercase tracking-[0.14em] text-ink-mute">
+            Organização
+            <span className="h-2 w-40 overflow-hidden rounded-full bg-paper-line sm:w-56">
+              <span
+                ref={meterBar}
+                className="block h-full rounded-full bg-gradient-to-r from-red-500 via-amber-400 to-emerald-500"
+                style={{ width: "50%" }}
+              />
+            </span>
+          </span>
+        </div>
+
         <div
           data-reveal
           ref={stage}
-          style={{ ["--pos" as string]: "50%" }}
-          className="relative mt-8 h-[400px] cursor-ew-resize touch-pan-y select-none overflow-hidden rounded-3xl border border-paper-line shadow-card sm:h-[440px]"
+          style={{ ["--pos" as string]: "50%", ["--p" as string]: "50" }}
+          className="group relative mt-3 h-[400px] cursor-ew-resize touch-pan-y select-none overflow-hidden rounded-3xl border border-paper-line shadow-card sm:h-[440px]"
           onPointerDown={(e) => {
-            stopIntro();
+            takeOver();
             dragging.current = true;
             e.currentTarget.setPointerCapture(e.pointerId);
             fromPointer(e);
@@ -112,21 +172,36 @@ export function BeforeAfter({ data }: Props) {
           onPointerUp={() => (dragging.current = false)}
           onPointerCancel={() => (dragging.current = false)}
         >
-          {/* ANTES */}
-          <div className="absolute inset-0" aria-hidden>
+          {/* ANTES: perde a cor e escurece conforme o "depois" avança */}
+          <div
+            className="absolute inset-0"
+            style={{ filter: "grayscale(calc((100 - var(--p)) * 0.8%)) brightness(calc(0.75 + var(--p) * 0.0025))" }}
+            aria-hidden
+          >
             <BeforeScene before={before} />
           </div>
 
           {/* DEPOIS: o sistema organizado de cada categoria, recortado a partir do divisor */}
           <div className="absolute inset-0" style={{ clipPath: "inset(0 0 0 var(--pos))" }} aria-hidden>
             <AfterScene after={after} />
+            {/* Brilho na borda do "depois", como um scanner organizando a tela */}
+            <div
+              className="pointer-events-none absolute inset-y-0 w-14 bg-gradient-to-r from-accent/20 to-transparent"
+              style={{ left: "var(--pos)" }}
+            />
           </div>
 
           {/* Rótulos */}
-          <span className="pointer-events-none absolute bottom-3 left-3 rounded-full bg-ink/80 px-3 py-1 font-mono text-[0.65rem] font-bold uppercase tracking-[0.16em] text-white">
+          <span
+            style={{ opacity: "calc(0.35 + var(--p) / 100)" }}
+            className="pointer-events-none absolute bottom-3 left-3 rounded-full bg-ink/80 px-3 py-1 font-mono text-[0.65rem] font-bold uppercase tracking-[0.16em] text-white"
+          >
             Antes
           </span>
-          <span className="pointer-events-none absolute bottom-3 right-3 rounded-full bg-accent px-3 py-1 font-mono text-[0.65rem] font-bold uppercase tracking-[0.16em] text-white">
+          <span
+            style={{ opacity: "calc(1.35 - var(--p) / 100)" }}
+            className="pointer-events-none absolute bottom-3 right-3 rounded-full bg-accent px-3 py-1 font-mono text-[0.65rem] font-bold uppercase tracking-[0.16em] text-white"
+          >
             Depois
           </span>
 
@@ -145,9 +220,11 @@ export function BeforeAfter({ data }: Props) {
               aria-valuenow={50}
               aria-valuetext="Arraste para a esquerda para ver o depois"
               onKeyDown={onKey}
-              className="pointer-events-auto absolute left-1/2 top-1/2 flex h-11 w-11 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-white text-ink shadow-lg ring-2 ring-accent"
+              className="pointer-events-auto absolute left-1/2 top-1/2 flex h-11 -translate-x-1/2 -translate-y-1/2 animate-[ring-pulse_1.6s_ease-out_infinite] cursor-grab items-center gap-0.5 rounded-full bg-white px-2 text-ink shadow-xl outline outline-2 outline-accent active:cursor-grabbing group-data-[touched=true]:animate-none"
             >
-              <ChevronsLeftRight className="h-5 w-5" aria-hidden />
+              <ChevronLeft className="h-4 w-4 animate-[nudge-left_1s_ease-in-out_infinite] text-accent" aria-hidden />
+              <span className="font-mono text-[0.62rem] font-bold uppercase tracking-[0.14em] group-data-[touched=true]:hidden">Arraste</span>
+              <ChevronRight className="h-4 w-4 animate-[nudge-right_1s_ease-in-out_infinite] text-accent" aria-hidden />
             </div>
           </div>
         </div>
