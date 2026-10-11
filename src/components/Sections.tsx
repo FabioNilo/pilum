@@ -18,6 +18,10 @@ import {
 } from "lucide-react";
 import { site } from "@/config";
 import { niches, PRICING, type NicheId, type ProjectWithSlides } from "@/data/projects";
+import { useGSAP } from "@gsap/react";
+import { useRef } from "react";
+import { useReveal } from "@/hooks/useReveal";
+import { gsap, NO_PREFERENCE, whenIntroDone } from "@/lib/motion";
 import { defaultMessage, waProps } from "@/lib/whatsapp";
 import { DeviceFrame } from "./DeviceFrame";
 import { PilumLogo } from "./Logo";
@@ -51,23 +55,45 @@ export function Hero({ projects }: { projects: ProjectWithSlides[] }) {
   const desktop = all.find((s) => s.device === "desktop");
   const mobile = all.find((s) => s.device === "mobile");
 
+  // Entrada em sequência, só depois da abertura sumir. O estado escondido é aplicado por JS.
+  const root = useRef<HTMLElement>(null);
+  useGSAP(
+    () => {
+      const mm = gsap.matchMedia();
+      mm.add(NO_PREFERENCE, () => {
+        gsap.set("[data-hero]", { autoAlpha: 0, y: 20 });
+        gsap.set("[data-hero-shot]", { autoAlpha: 0, y: 40 });
+        let tl: gsap.core.Timeline | undefined;
+        const cancel = whenIntroDone(() => {
+          tl = gsap.timeline({ defaults: { ease: "power3.out", duration: 0.7 } });
+          tl.to("[data-hero]", { autoAlpha: 1, y: 0, stagger: 0.12 }).to("[data-hero-shot]", { autoAlpha: 1, y: 0, stagger: 0.25, duration: 0.9 }, 0.2);
+        });
+        return () => {
+          cancel();
+          tl?.kill();
+        };
+      });
+    },
+    { scope: root },
+  );
+
   return (
-    <section id="topo" className="relative overflow-hidden">
+    <section id="topo" ref={root} className="relative overflow-hidden">
       <div className="container grid items-center gap-12 pb-16 pt-12 sm:pt-20 lg:grid-cols-2 lg:pb-24">
         <div>
-          <p className="eyebrow">Sistemas sob medida para restaurantes, bistrôs e delivery</p>
-          <p className="mt-2 flex items-center gap-1.5 text-sm text-ink-mute">
+          <p data-hero className="eyebrow">Sistemas sob medida para restaurantes, bistrôs e delivery</p>
+          <p data-hero className="mt-2 flex items-center gap-1.5 text-sm text-ink-mute">
             <MapPin className="h-4 w-4" aria-hidden />
             Ilhéus e Itabuna – BA
           </p>
-          <h1 className="mt-4 text-[2.6rem] uppercase leading-[1.02] sm:text-6xl lg:text-[4.1rem]">
+          <h1 data-hero className="mt-4 text-[2.6rem] uppercase leading-[1.02] sm:text-6xl lg:text-[4.1rem]">
             Menos planilha e papel. <span className="text-accent">Mais vendas e controle.</span>
           </h1>
-          <p className="mt-5 max-w-xl text-lg text-ink-soft">
+          <p data-hero className="mt-5 max-w-xl text-lg text-ink-soft">
             Antes de escrever código, entendo onde o seu negócio perde tempo e dinheiro. O sistema mira exatamente ali,
             e você acompanha tudo pelo celular.
           </p>
-          <div className="mt-8 flex flex-wrap gap-3">
+          <div data-hero className="mt-8 flex flex-wrap gap-3">
             <a className="btn-primary" {...waProps(defaultMessage, "hero")}>
               <MessageCircle className="h-4 w-4" aria-hidden />
               Falar no WhatsApp
@@ -77,7 +103,7 @@ export function Hero({ projects }: { projects: ProjectWithSlides[] }) {
               <ArrowDown className="h-4 w-4" aria-hidden />
             </a>
           </div>
-          <ul className="mt-10 max-w-md space-y-3 border-t border-paper-line pt-6">
+          <ul data-hero className="mt-10 max-w-md space-y-3 border-t border-paper-line pt-6">
             {heroPoints.map(({ icon: Icon, text }) => (
               <li key={text} className="flex items-start gap-3 text-[0.95rem] text-ink">
                 <Icon className="mt-0.5 h-5 w-5 shrink-0 text-accent" aria-hidden />
@@ -85,7 +111,7 @@ export function Hero({ projects }: { projects: ProjectWithSlides[] }) {
               </li>
             ))}
           </ul>
-          <p className="mt-3 max-w-md text-xs text-ink-mute">
+          <p data-hero className="mt-3 max-w-md text-xs text-ink-mute">
             A taxa da operadora de pagamento (Pix/cartão) é cobrada à parte pela própria operadora.
           </p>
         </div>
@@ -93,11 +119,11 @@ export function Hero({ projects }: { projects: ProjectWithSlides[] }) {
         {desktop && (
           <div className="relative mx-auto w-full max-w-xl lg:max-w-none" aria-hidden>
             <div className="absolute -inset-6 -z-10 rounded-[2.5rem] bg-gradient-to-br from-accent-soft via-paper to-paper-line" />
-            <div className="overflow-hidden rounded-2xl border border-paper-line shadow-card">
+            <div data-hero-shot className="overflow-hidden rounded-2xl border border-paper-line shadow-card">
               <DeviceFrame slide={desktop} eager />
             </div>
             {mobile && (
-              <div className="absolute -bottom-8 -left-2 w-[28%] overflow-hidden rounded-[1.4rem] border-[5px] border-ink bg-ink shadow-2xl sm:-left-8">
+              <div data-hero-shot className="absolute -bottom-8 -left-2 w-[28%] overflow-hidden rounded-[1.4rem] border-[5px] border-ink bg-ink shadow-2xl sm:-left-8">
                 <img src={mobile.src} alt="" className="aspect-[390/844] w-full rounded-[1rem] object-cover object-top" />
               </div>
             )}
@@ -147,16 +173,36 @@ const pains: { icon: typeof Percent; scene: string; relief: string; projectId: s
 ];
 
 export function PainStrip({ onPick }: { onPick: (projectId: string, ref: string) => void }) {
+  // Dor primeiro, alívio depois: cada card entra e só então revela a frase de alívio.
+  const root = useRef<HTMLElement>(null);
+  useGSAP(
+    () => {
+      const mm = gsap.matchMedia();
+      mm.add(NO_PREFERENCE, () => {
+        const tl = gsap.timeline({
+          defaults: { ease: "power2.out" },
+          scrollTrigger: { trigger: root.current, start: "top 80%", once: true },
+        });
+        tl.from("[data-pain-title]", { autoAlpha: 0, y: 12, duration: 0.5 })
+          .from("[data-pain]", { autoAlpha: 0, y: 36, duration: 0.6, stagger: 0.14 }, "-=0.2")
+          .from("[data-pain-icon]", { scale: 0.6, duration: 0.5, ease: "back.out(2)", stagger: 0.14 }, "<")
+          .from("[data-pain-relief]", { autoAlpha: 0, y: 8, duration: 0.5, stagger: 0.14 }, "-=0.2");
+      });
+    },
+    { scope: root },
+  );
+
   return (
-    <section aria-labelledby="dores" className="border-y border-paper-line bg-paper-card">
+    <section ref={root} aria-labelledby="dores" className="border-y border-paper-line bg-paper-card">
       <div className="container py-12">
-        <h2 id="dores" className="text-center font-mono text-xs font-medium uppercase tracking-[0.2em] text-ink-mute">
+        <h2 id="dores" data-pain-title className="text-center font-mono text-xs font-medium uppercase tracking-[0.2em] text-ink-mute">
           Qual destes problemas você tem hoje?
         </h2>
         <div className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
           {pains.map(({ icon: Icon, scene, relief, projectId, ref }) => (
             <a
               key={ref}
+              data-pain
               href={`#${projectId}`}
               onClick={(e) => {
                 e.preventDefault();
@@ -164,11 +210,11 @@ export function PainStrip({ onPick }: { onPick: (projectId: string, ref: string)
               }}
               className="group flex flex-col gap-3 rounded-2xl border border-paper-line p-4 transition-colors hover:border-accent/50 hover:bg-accent-soft/60"
             >
-              <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-ink text-paper">
+              <span data-pain-icon className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-ink text-paper">
                 <Icon className="h-5 w-5" aria-hidden />
               </span>
               <span className="block font-semibold leading-snug">{scene}</span>
-              <span className="block text-sm text-ink-mute">{relief}</span>
+              <span data-pain-relief className="block text-sm text-ink-mute">{relief}</span>
               <span className="mt-auto inline-flex items-center gap-1 text-sm font-medium text-accent group-hover:underline">
                 Ver a solução
                 <ArrowDown className="h-3.5 w-3.5" aria-hidden />
@@ -212,14 +258,15 @@ const steps = [
 ];
 
 export function HowItWorks() {
+  const root = useReveal<HTMLElement>("[data-reveal]", { stagger: 0.12 });
   return (
-    <section id="como-funciona" className="section scroll-mt-16 bg-ink text-paper">
+    <section id="como-funciona" ref={root} className="section scroll-mt-16 bg-ink text-paper">
       <div className="container">
         <p className="eyebrow text-accent-bright">Como funciona</p>
         <h2 className="mt-2 max-w-2xl text-3xl uppercase text-paper sm:text-5xl">Do primeiro papo ao sistema rodando</h2>
         <ol className="mt-10 grid gap-6 md:grid-cols-3">
           {steps.map((s, i) => (
-            <li key={s.title} className="rounded-2xl border border-paper/10 bg-ink-raised p-6">
+            <li key={s.title} data-reveal className="rounded-2xl border border-paper/10 bg-ink-raised p-6">
               <span className="font-mono text-sm font-bold tracking-[0.2em] text-accent-bright">0{i + 1}</span>
               <h3 className="mt-2 text-xl font-bold text-paper">{s.title}</h3>
               <p className="mt-2 text-paper/70">{s.text}</p>
@@ -227,7 +274,7 @@ export function HowItWorks() {
           ))}
         </ol>
 
-        <div className="mt-8 rounded-2xl border border-paper/10 p-6">
+        <div data-reveal className="mt-8 rounded-2xl border border-paper/10 p-6">
           <h3 className="font-mono text-xs font-bold uppercase tracking-[0.2em] text-accent-bright">Como funciona o valor</h3>
           <ul className="mt-4 space-y-2.5 text-paper/80">
             {/* TODO(fabio): confirmar o modelo (só mensalidade) e o que está incluso. O texto vem de PRICING em src/data/projects.ts. */}
@@ -267,14 +314,15 @@ const whyMe = [
 ];
 
 export function Differentials() {
+  const root = useReveal<HTMLElement>("[data-reveal]", { stagger: 0.1 });
   return (
-    <section className="section">
+    <section ref={root} className="section">
       <div className="container">
         <p className="eyebrow">Por que trabalhar comigo</p>
         <h2 className="mt-2 max-w-2xl text-3xl uppercase sm:text-5xl">Atendimento de perto, de quem desenvolve</h2>
         <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {whyMe.map(({ icon: Icon, title, text }) => (
-            <div key={title} className="rounded-2xl border border-paper-line bg-paper-card p-5">
+            <div key={title} data-reveal className="rounded-2xl border border-paper-line bg-paper-card p-5">
               <Icon className="h-6 w-6 text-accent" aria-hidden />
               <h3 className="mt-3 font-bold leading-snug">{title}</h3>
               <p className="mt-1 text-sm text-ink-mute">{text}</p>
@@ -287,10 +335,11 @@ export function Differentials() {
 }
 
 export function CtaFooter() {
+  const root = useReveal<HTMLElement>("[data-reveal]", { y: 32, duration: 0.8 });
   return (
     <footer>
-      <section className="container pb-16">
-        <div className="rounded-3xl bg-accent px-6 py-12 text-center text-white sm:px-12 sm:py-16">
+      <section ref={root} className="container pb-16">
+        <div data-reveal className="rounded-3xl bg-accent px-6 py-12 text-center text-white sm:px-12 sm:py-16">
           <h2 className="mx-auto max-w-2xl text-3xl uppercase sm:text-5xl">Vamos resolver o gargalo do seu negócio?</h2>
           <p className="mx-auto mt-3 max-w-xl text-white/85">
             Me chame no WhatsApp, conte como funciona hoje e eu mostro como a solução ficaria para você. Sem compromisso.

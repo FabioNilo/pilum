@@ -1,4 +1,5 @@
 import { ArrowUpRight, Check, ChevronDown, MessageCircle } from "lucide-react";
+import { useReveal } from "@/hooks/useReveal";
 import { primaryNiches, projects, type ProjectWithSlides } from "@/data/projects";
 import { track } from "@/lib/track";
 import { waProps } from "@/lib/whatsapp";
@@ -17,9 +18,12 @@ export function ProjectCard({ project, flip, compact = false, onSee }: Props) {
   const p = project;
   // Nichos de comida: "no meu restaurante". Os demais: convite mais geral.
   const food = primaryNiches.includes(p.niche);
+  // Problema primeiro, solução depois (só na versão completa).
+  const root = useReveal<HTMLElement>("[data-reveal]", { y: 16, duration: 0.5, stagger: 0.35 });
   return (
     <article
       id={p.id}
+      ref={root}
       className={`grid scroll-mt-24 items-start gap-8 rounded-3xl border border-paper-line lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-12 ${
         compact ? "bg-paper p-5" : "bg-paper-card p-5 shadow-card sm:p-8"
       }`}
@@ -39,11 +43,11 @@ export function ProjectCard({ project, flip, compact = false, onSee }: Props) {
 
         {!compact && (
           <dl className="mt-5 space-y-3 text-[0.95rem]">
-            <div className="rounded-xl bg-paper px-4 py-3">
+            <div data-reveal className="rounded-xl bg-paper px-4 py-3">
               <dt className="font-mono text-xs font-bold uppercase tracking-[0.16em] text-ink-mute">O problema</dt>
               <dd className="mt-0.5 text-ink-soft">{p.problem}</dd>
             </div>
-            <div className="rounded-xl bg-ink px-4 py-3">
+            <div data-reveal className="rounded-xl bg-ink px-4 py-3">
               <dt className="font-mono text-xs font-bold uppercase tracking-[0.16em] text-accent-bright">A solução</dt>
               <dd className="mt-0.5 text-paper">{p.solution}</dd>
             </div>

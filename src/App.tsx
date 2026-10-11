@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { ScrollTrigger } from "@/lib/motion";
 import { track } from "@/lib/track";
 import { primaryNiches, projects, type NicheId } from "@/data/projects";
 import { Chooser } from "@/components/Chooser";
@@ -11,6 +12,11 @@ export default function App() {
   const visible = niche === "todos" ? projects : projects.filter((p) => p.niche === niche);
   const main = visible.filter((p) => primaryNiches.includes(p.niche));
   const others = visible.filter((p) => !primaryNiches.includes(p.niche));
+
+  // O filtro muda a altura da página: recalcula as posições dos gatilhos de scroll.
+  useEffect(() => {
+    ScrollTrigger.refresh();
+  }, [niche]);
 
   // Clique numa dor: abre todos os nichos (para o card existir) e rola até a solução.
   const goToSolution = (projectId: string, ref: string) => {
