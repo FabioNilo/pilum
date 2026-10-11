@@ -1,8 +1,9 @@
 import { ArrowDown } from "lucide-react";
-import { tierChooser } from "@/data/projects";
 
 /** "Qual é o seu caso?": leva o dono de restaurante direto à opção que combina com ele. */
-export function Chooser({ onPick }: { onPick: (projectId: string, ref: string) => void }) {
+type Item = { ifYou: string; projectId: string; tierName: string };
+
+export function Chooser({ items, onPick }: { items: Item[]; onPick: (projectId: string, ref: string) => void }) {
   return (
     <section aria-labelledby="qual-caso" className="mt-10 rounded-3xl border border-paper-line bg-paper-card p-5 shadow-card sm:p-8">
       <p className="eyebrow">Qual é o seu caso?</p>
@@ -10,7 +11,7 @@ export function Chooser({ onPick }: { onPick: (projectId: string, ref: string) =
         Comece pela opção que combina com o seu restaurante
       </h3>
       <ul className="mt-5 grid gap-3 md:grid-cols-3">
-        {tierChooser.map(({ ifYou, projectId, tierName }) => (
+        {items.map(({ ifYou, projectId, tierName }) => (
           <li key={projectId}>
             <a
               href={`#${projectId}`}

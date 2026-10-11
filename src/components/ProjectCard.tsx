@@ -1,4 +1,4 @@
-import { ArrowUpRight, Check, ChevronDown, MessageCircle } from "lucide-react";
+import { ArrowUpRight, Check, ChevronDown, MessageCircle, Smartphone } from "lucide-react";
 import { useReveal } from "@/hooks/useReveal";
 import { primaryNiches, projects, type ProjectWithSlides } from "@/data/projects";
 import { track } from "@/lib/track";
@@ -12,9 +12,13 @@ type Props = {
   compact?: boolean;
   /** Rola até outra solução (usado nos links de "talvez não seja para você"). */
   onSee?: (projectId: string, ref: string) => void;
+  /** Frase que adapta o sistema ao nicho escolhido (ex.: "Na lanchonete: ..."). */
+  note?: string;
+  /** Texto do botão de WhatsApp (ex.: "Ver como ficaria na minha lanchonete"). */
+  ctaLabel?: string;
 };
 
-export function ProjectCard({ project, flip, compact = false, onSee }: Props) {
+export function ProjectCard({ project, flip, compact = false, onSee, note, ctaLabel }: Props) {
   const p = project;
   // Nichos de comida: "no meu restaurante". Os demais: convite mais geral.
   const food = primaryNiches.includes(p.niche);
@@ -24,7 +28,7 @@ export function ProjectCard({ project, flip, compact = false, onSee }: Props) {
     <article
       id={p.id}
       ref={root}
-      className={`grid scroll-mt-24 items-start gap-8 rounded-3xl border border-paper-line lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-12 ${
+      className={`grid scroll-mt-32 items-start gap-8 rounded-3xl border border-paper-line lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-12 ${
         compact ? "bg-paper p-5" : "bg-paper-card p-5 shadow-card sm:p-8"
       }`}
     >
@@ -36,8 +40,15 @@ export function ProjectCard({ project, flip, compact = false, onSee }: Props) {
               {p.tier.name}
             </span>
           )}
+          {/* Todos os sistemas são PWA: instalam na tela inicial do celular. */}
+          <span className="inline-flex items-center gap-1 rounded-full border border-accent/30 bg-accent-soft px-2.5 py-1 font-mono text-[0.65rem] font-bold uppercase tracking-[0.12em] text-accent-ink">
+            <Smartphone className="h-3 w-3" aria-hidden />
+            Instala no celular
+          </span>
         </div>
         <h3 className={`mt-2 font-bold leading-tight ${compact ? "text-xl" : "text-2xl sm:text-[1.75rem]"}`}>{p.title}</h3>
+
+        {note && <p className="mt-3 rounded-lg border-l-4 border-accent bg-accent-soft/60 px-3 py-2 text-sm font-medium text-ink">{note}</p>}
 
         <p className="mt-3 text-[0.95rem] text-ink-soft">{p.whatIs}</p>
 
@@ -80,7 +91,7 @@ export function ProjectCard({ project, flip, compact = false, onSee }: Props) {
             )}
           >
             <MessageCircle className="h-4 w-4" aria-hidden />
-            {food ? "Ver como ficaria no meu restaurante" : "Quero conversar sobre isso"}
+            {ctaLabel ?? (food ? "Ver como ficaria no meu negócio" : "Quero conversar sobre isso")}
           </a>
           {p.demoUrl && (
             <a className="btn-ghost" href={p.demoUrl} target="_blank" rel="noopener noreferrer">

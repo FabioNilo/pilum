@@ -1,29 +1,63 @@
-import { useEffect, useState } from "react";
-import { ScrollTrigger } from "@/lib/motion";
+import { useEffect, useRef, useState, type ReactNode } from "react";
+import { useGSAP } from "@gsap/react";
+import { gsap, NO_PREFERENCE, ScrollTrigger } from "@/lib/motion";
 import { track } from "@/lib/track";
-import { primaryNiches, projects, type NicheId } from "@/data/projects";
+import { projects } from "@/data/projects";
+import { DEFAULT_SEGMENT, getSegment, readSegmentFromUrl, segments, writeSegmentToUrl, type SegmentId } from "@/data/segments";
+import { BeforeAfter } from "@/components/BeforeAfter";
 import { Chooser } from "@/components/Chooser";
+import { OrderFlow } from "@/components/OrderFlow";
+import { PwaDemo } from "@/components/PwaDemo";
 import { ProjectCard } from "@/components/ProjectCard";
+import { SegmentPicker, SegmentSwitcher } from "@/components/SegmentPicker";
 import { Testimonials } from "@/components/Testimonials";
-import { CtaFooter, Differentials, Header, Hero, HowItWorks, NicheFilter, PainStrip } from "@/components/Sections";
+import { CtaFooter, Differentials, Header, Hero, HowItWorks, PainStrip } from "@/components/Sections";
+
+/** Ao trocar de nicho, o conteúdo novo entra com um fade (só opacidade: transform quebraria a seção fixa). */
+function SegmentContent({ animate, children }: { animate: boolean; children: ReactNode }) {
+  const root = useRef<HTMLDivElement>(null);
+  useGSAP(
+    () => {
+      if (!animate) return;
+      const mm = gsap.matchMedia();
+      mm.add(NO_PREFERENCE, () => {
+        gsap.from(root.current, { autoAlpha: 0, duration: 0.45, ease: "power1.out", clearProps: "opacity,visibility" });
+      });
+    },
+    { scope: root },
+  );
+  return <div ref={root}>{children}</div>;
+}
 
 export default function App() {
-  const [niche, setNiche] = useState<NicheId | "todos">("todos");
-  const visible = niche === "todos" ? projects : projects.filter((p) => p.niche === niche);
-  const main = visible.filter((p) => primaryNiches.includes(p.niche));
-  const others = visible.filter((p) => !primaryNiches.includes(p.niche));
+  const [segmentId, setSegmentId] = useState<SegmentId>(() => readSegmentFromUrl() ?? DEFAULT_SEGMENT);
+  const switched = useRef(false);
+  const segment = getSegment(segmentId);
+  const { solutions } = segment;
+  const segProjects = solutions.projectIds.map((id) => projects.find((p) => p.id === id)).filter((p) => !!p);
 
-  // O filtro muda a altura da página: recalcula as posições dos gatilhos de scroll.
+  const choose = (id: SegmentId, origin: string) => {
+    if (id === segmentId) return;
+    switched.current = true;
+    setSegmentId(id);
+    writeSegmentToUrl(id);
+    track("nicho_escolhido", { nicho: id, origem: origin });
+  };
+
+  // O conteúdo do nicho muda a altura da página: recalcula as posições dos gatilhos de scroll.
   useEffect(() => {
     ScrollTrigger.refresh();
-  }, [niche]);
+  }, [segmentId]);
 
-  // Clique numa dor: abre todos os nichos (para o card existir) e rola até a solução.
+  // Clique numa dor ou num "ver a opção indicada": rola até a solução, trocando de nicho se ela for de outro.
   const goToSolution = (projectId: string, ref: string) => {
-    setNiche("todos");
     track("dor_click", { ref });
+    if (!solutions.projectIds.includes(projectId)) {
+      const other = segments.find((s) => s.solutions.projectIds.includes(projectId));
+      if (other) choose(other.id, "link");
+    }
     const smooth = !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    window.setTimeout(() => document.getElementById(projectId)?.scrollIntoView({ behavior: smooth ? "smooth" : "auto", block: "start" }), 60);
+    window.setTimeout(() => document.getElementById(projectId)?.scrollIntoView({ behavior: smooth ? "smooth" : "auto", block: "start" }), 120);
   };
 
   return (
@@ -31,55 +65,47 @@ export default function App() {
       <Header />
       <main>
         <Hero projects={projects} />
-        <PainStrip onPick={goToSolution} />
+        <SegmentPicker value={segmentId} onChange={choose} contentId="nicho" />
 
-        <section id="solucoes" className="section scroll-mt-16">
-          <div className="container">
-            <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
-              <div>
-                <p className="eyebrow">Soluções por nicho</p>
-                <h2 className="mt-2 max-w-2xl text-3xl uppercase sm:text-4xl">
-                  Soluções prontas para adaptar ao seu negócio, testadas em restaurantes e delivery
-                </h2>
-                <p className="mt-3 max-w-2xl text-ink-soft">
-                  {/* TODO(fabio): se quiser dizer "em uso" também nos outros nichos, confirme antes quais clientes autorizam. */}
-                  Veja as telas e imagine com a sua marca.
-                </p>
-              </div>
-              <NicheFilter value={niche} onChange={setNiche} />
-            </div>
+        <div id="nicho" className="scroll-mt-32">
+          <SegmentContent key={segmentId} animate={switched.current}>
+            <PainStrip pains={segment.pains} onPick={goToSolution} />
+            <BeforeAfter data={segment.beforeAfter} />
+            <OrderFlow flow={segment.flow} />
+            <PwaDemo pwa={segment.pwa} />
 
-            {(niche === "todos" || niche === "restaurantes") && main.length > 0 && <Chooser onPick={goToSolution} />}
+            <section id="solucoes" className="section scroll-mt-32">
+              <div className="container">
+                <p className="eyebrow">Soluções para você</p>
+                <h2 className="mt-2 max-w-2xl text-3xl uppercase sm:text-4xl">{solutions.title}</h2>
+                <p className="mt-3 max-w-2xl text-ink-soft">{solutions.intro}</p>
 
-            {main.length > 0 && (
-              <div className="mt-8 space-y-8">
-                {main.map((p, i) => (
-                  <ProjectCard key={p.id} project={p} flip={i % 2 === 1} onSee={goToSolution} />
-                ))}
-              </div>
-            )}
+                {solutions.chooser && <Chooser items={solutions.chooser} onPick={goToSolution} />}
 
-            {others.length > 0 && (
-              <div className={main.length > 0 ? "mt-16 border-t border-paper-line pt-12" : "mt-10"}>
-                <p className="eyebrow">Também desenvolvo para</p>
-                <p className="mt-2 max-w-2xl text-ink-soft">
-                  A mesma base serve para outros negócios de atendimento e de reservas. Estas são demonstrações prontas para adaptar.
-                </p>
-                <div className="mt-6 space-y-6">
-                  {others.map((p, i) => (
-                    <ProjectCard key={p.id} project={p} flip={i % 2 === 1} compact />
+                <div className="mt-8 space-y-8">
+                  {segProjects.map((p, i) => (
+                    <ProjectCard
+                      key={p.id}
+                      project={p}
+                      flip={i % 2 === 1}
+                      onSee={goToSolution}
+                      note={solutions.notes?.[p.id]}
+                      ctaLabel={solutions.cardCta}
+                    />
                   ))}
                 </div>
               </div>
-            )}
-          </div>
-        </section>
+            </section>
+
+            <SegmentSwitcher value={segmentId} onChange={choose} contentId="nicho" />
+          </SegmentContent>
+        </div>
 
         <Testimonials />
         <HowItWorks />
         <Differentials />
       </main>
-      <CtaFooter />
+      <CtaFooter title={segment.cta.title} text={segment.cta.text} message={segment.cta.message} />
     </>
   );
 }

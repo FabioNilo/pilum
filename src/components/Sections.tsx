@@ -1,23 +1,20 @@
 import {
   ArrowDown,
-  Bike,
   ClipboardList,
   FlaskConical,
-  FileSpreadsheet,
   Instagram,
   LifeBuoy,
   Mail,
   MapPin,
   MessageCircle,
-  MessagesSquare,
   Palette,
-  Percent,
   Smartphone,
   UserRound,
   Wallet,
 } from "lucide-react";
 import { site } from "@/config";
-import { niches, PRICING, type NicheId, type ProjectWithSlides } from "@/data/projects";
+import { PRICING, type ProjectWithSlides } from "@/data/projects";
+import type { Pain } from "@/data/segments";
 import { useGSAP } from "@gsap/react";
 import { useRef } from "react";
 import { useReveal } from "@/hooks/useReveal";
@@ -81,7 +78,7 @@ export function Hero({ projects }: { projects: ProjectWithSlides[] }) {
     <section id="topo" ref={root} className="relative overflow-hidden">
       <div className="container grid items-center gap-12 pb-16 pt-12 sm:pt-20 lg:grid-cols-2 lg:pb-24">
         <div>
-          <p data-hero className="eyebrow">Sistemas sob medida para restaurantes, bistrôs e delivery</p>
+          <p data-hero className="eyebrow">Sistemas sob medida para pequenos negócios</p>
           <p data-hero className="mt-2 flex items-center gap-1.5 text-sm text-ink-mute">
             <MapPin className="h-4 w-4" aria-hidden />
             Ilhéus e Itabuna – BA
@@ -98,7 +95,7 @@ export function Hero({ projects }: { projects: ProjectWithSlides[] }) {
               <MessageCircle className="h-4 w-4" aria-hidden />
               Falar no WhatsApp
             </a>
-            <a className="btn-ghost" href="#solucoes">
+            <a className="btn-ghost" href="#seu-negocio">
               Ver soluções
               <ArrowDown className="h-4 w-4" aria-hidden />
             </a>
@@ -135,44 +132,13 @@ export function Hero({ projects }: { projects: ProjectWithSlides[] }) {
 }
 
 const heroPoints = [
-  { icon: ClipboardList, text: "Pedidos organizados num painel" },
+  { icon: ClipboardList, text: "Pedidos, agenda e caixa organizados num painel" },
   { icon: Wallet, text: "Sem comissão da Pilum sobre suas vendas" },
-  { icon: Smartphone, text: "Funciona no celular, para você e para o seu cliente" },
+  { icon: Smartphone, text: "Instala no celular como app, para você e para o seu cliente" },
 ];
 
-// Cada dor leva à solução que a resolve; o botão de WhatsApp fica no card, com mensagem coerente.
-const pains: { icon: typeof Percent; scene: string; relief: string; projectId: string; ref: string }[] = [
-  {
-    icon: MessagesSquare,
-    scene: "O pedido chegou no meio de 30 conversas do WhatsApp",
-    relief: "Pedidos num painel só, nada se perde.",
-    projectId: "marmitas",
-    ref: "dor-pedido-perdido",
-  },
-  {
-    icon: Percent,
-    scene: "Uma parte de cada venda fica com o aplicativo de entrega",
-    relief: "Venda direto, no seu próprio site.",
-    projectId: "delivery-proprio",
-    ref: "dor-comissao",
-  },
-  {
-    icon: FileSpreadsheet,
-    scene: "A planilha só você entende, e só no fim do mês",
-    relief: "Veja como o dia foi, no celular.",
-    projectId: "restaurante-mesa",
-    ref: "dor-planilha",
-  },
-  {
-    icon: Bike,
-    scene: "O motoboy saiu e ninguém sabe se o pedido chegou",
-    relief: "Cada entrega com status, no painel.",
-    projectId: "plataforma-restaurantes",
-    ref: "dor-motoboy",
-  },
-];
-
-export function PainStrip({ onPick }: { onPick: (projectId: string, ref: string) => void }) {
+// Cada dor leva à solução que a resolve. As dores de cada nicho ficam em src/data/segments.ts.
+export function PainStrip({ pains, onPick }: { pains: Pain[]; onPick: (projectId: string, ref: string) => void }) {
   // Dor primeiro, alívio depois: cada card entra e só então revela a frase de alívio.
   const root = useRef<HTMLElement>(null);
   useGSAP(
@@ -224,30 +190,6 @@ export function PainStrip({ onPick }: { onPick: (projectId: string, ref: string)
         </div>
       </div>
     </section>
-  );
-}
-
-export function NicheFilter({ value, onChange }: { value: NicheId | "todos"; onChange: (v: NicheId | "todos") => void }) {
-  const items = [{ id: "todos" as const, label: "Todos" }, ...niches];
-  return (
-    <div role="tablist" aria-label="Filtrar por nicho" className="-mx-4 flex gap-2 overflow-x-auto px-4 pb-1 sm:mx-0 sm:flex-wrap sm:px-0">
-      {items.map((n) => {
-        const active = value === n.id;
-        return (
-          <button
-            key={n.id}
-            role="tab"
-            aria-selected={active}
-            onClick={() => onChange(n.id)}
-            className={`shrink-0 rounded-full border px-4 py-2 text-sm font-medium transition-colors ${
-              active ? "border-ink bg-ink text-white" : "border-paper-line bg-white text-ink-soft hover:border-ink/30"
-            }`}
-          >
-            {n.label}
-          </button>
-        );
-      })}
-    </div>
   );
 }
 
@@ -334,17 +276,21 @@ export function Differentials() {
   );
 }
 
-export function CtaFooter() {
+type CtaProps = { title?: string; text?: string; message?: string };
+
+export function CtaFooter({
+  title = "Vamos resolver o gargalo do seu negócio?",
+  text = "Me chame no WhatsApp, conte como funciona hoje e eu mostro como a solução ficaria para você. Sem compromisso.",
+  message = defaultMessage,
+}: CtaProps) {
   const root = useReveal<HTMLElement>("[data-reveal]", { y: 32, duration: 0.8 });
   return (
     <footer>
       <section ref={root} className="container pb-16">
         <div data-reveal className="rounded-3xl bg-accent px-6 py-12 text-center text-white sm:px-12 sm:py-16">
-          <h2 className="mx-auto max-w-2xl text-3xl uppercase sm:text-5xl">Vamos resolver o gargalo do seu negócio?</h2>
-          <p className="mx-auto mt-3 max-w-xl text-white/85">
-            Me chame no WhatsApp, conte como funciona hoje e eu mostro como a solução ficaria para você. Sem compromisso.
-          </p>
-          <a className="btn mt-8 bg-white text-accent-ink hover:bg-paper" {...waProps(defaultMessage, "rodape")}>
+          <h2 className="mx-auto max-w-2xl text-3xl uppercase sm:text-5xl">{title}</h2>
+          <p className="mx-auto mt-3 max-w-xl text-white/85">{text}</p>
+          <a className="btn mt-8 bg-white text-accent-ink hover:bg-paper" {...waProps(message, "rodape")}>
             <MessageCircle className="h-4 w-4" aria-hidden />
             Falar no WhatsApp
           </a>
