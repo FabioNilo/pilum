@@ -1,10 +1,10 @@
 import shots from "./shots.json";
+import type { ServiceId } from "./services";
 
-export type NicheId = "restaurantes" | "saude" | "condominios" | "alimentacao" | "turismo" | "advocacia";
+export type NicheId = "restaurantes" | "saude" | "condominios" | "turismo" | "advocacia";
 
 export const niches: { id: NicheId; label: string }[] = [
   { id: "restaurantes", label: "Restaurantes e delivery" },
-  { id: "alimentacao", label: "Marmitas e congelados" },
   { id: "saude", label: "Clínicas e consultórios" },
   { id: "condominios", label: "Condomínios" },
   { id: "turismo", label: "Passeios e turismo" },
@@ -42,12 +42,18 @@ export type Project = {
   notForWho?: NotFor[];
   /** O que o cliente recebe, de forma concreta. */
   includes?: string[];
-  /** O que o cliente precisa me entregar para começar. */
+  /** O que o cliente precisa nos entregar para começar. */
   needsFromYou?: string[];
   /** Prazo estimado para a primeira versão. Só preencher com prazo real. */
   timeline?: string;
-  /** Como é cobrado (sem valores, se preferir). */
-  pricingModel?: string;
+  /** Tipos de serviço do case (filtro do portfólio). */
+  services: ServiceId[];
+  /** Tecnologias usadas, em chips discretos no case. */
+  stack: string[];
+  /** Resultado medido no cliente. Só preencher com número real e autorizado. */
+  result?: string;
+  /** Nome (e logo em public/) do cliente, SÓ com autorização. Sem isto, o case fica anônimo. */
+  client?: { name: string; logo?: string };
   /** Degrau da solução (usado nas soluções de restaurante). */
   tier?: Tier;
   /** Funções técnicas, em texto menor, depois dos benefícios. */
@@ -60,8 +66,7 @@ export type Project = {
   videoUrl?: string;
 };
 
-// TODO(fabio): confirmar o que está incluso na implantação e na mensalidade antes de publicar.
-export const PRICING = "Sem taxa de implantação, apenas mensalidade. Não há comissão sobre suas vendas.";
+// Preço é sob consulta: nenhum valor ou modelo de cobrança aparece na página.
 
 // TODO(fabio): confirmar que 24 horas é um prazo que você cumpre sempre (considere fins de semana e feriados).
 export const TIMELINE = "Primeira versão em menos de 24 horas. Ajustes e novas funções são combinados numa reunião para refinamento.";
@@ -69,6 +74,8 @@ export const TIMELINE = "Primeira versão em menos de 24 horas. Ajustes e novas 
 const base: Omit<Project, "demoLabel">[] = [
   {
     id: "delivery-proprio",
+    services: ["sistemas", "sites"],
+    stack: ["React", "Vite", "Hono", "Postgres (Neon)", "PWA"],
     niche: "restaurantes",
     audience: "Restaurantes com delivery",
     title: "Delivery próprio, sem comissão de aplicativo",
@@ -98,7 +105,6 @@ const base: Omit<Project, "demoLabel">[] = [
     ],
     needsFromYou: ["Cardápio com preços (e fotos, se tiver)", "Bairros atendidos e valor da entrega de cada um", "Logo e cores, se tiver"],
     timeline: TIMELINE,
-    pricingModel: PRICING,
     tier: { name: "Essencial: pedidos online", level: 1 },
     // TODO(fabio): diferenciar pagamento feito dentro do site (online) de pagamento combinado na entrega.
     // TODO(fabio): concluir a configuração da impressão na cozinha (agente de impressão e rede do restaurante) antes de prometer.
@@ -106,6 +112,8 @@ const base: Omit<Project, "demoLabel">[] = [
   },
   {
     id: "restaurante-mesa",
+    services: ["sistemas", "integracoes"],
+    stack: ["React", "Vite", "Hono", "Postgres (Neon)", "PWA"],
     niche: "restaurantes",
     audience: "Cafés, bistrôs e restaurantes",
     title: "Cardápio digital e pedido na mesa pelo QR Code",
@@ -133,7 +141,6 @@ const base: Omit<Project, "demoLabel">[] = [
     ],
     needsFromYou: ["Cardápio com preços (e fotos, se tiver)", "Número de mesas", "Logo e cores, se tiver"],
     timeline: TIMELINE,
-    pricingModel: PRICING,
     tier: { name: "Salão e delivery", level: 2 },
     extras: [
       "Mapa de mesas ao vivo",
@@ -144,6 +151,8 @@ const base: Omit<Project, "demoLabel">[] = [
   },
   {
     id: "plataforma-restaurantes",
+    services: ["sistemas", "integracoes"],
+    stack: ["Next.js", "Prisma", "Postgres (Neon)", "Mercado Pago", "PWA"],
     niche: "restaurantes",
     audience: "Operações com motoboys e estoque",
     title: "Gestão completa: pedidos, motoboys, estoque e fidelidade",
@@ -176,7 +185,6 @@ const base: Omit<Project, "demoLabel">[] = [
       "Nome e celular dos entregadores",
     ],
     timeline: TIMELINE,
-    pricingModel: PRICING,
     tier: { name: "Completo", level: 3 },
     extras: [
       "Impressão automática do pedido em impressora de cupom (80 mm)",
@@ -185,49 +193,9 @@ const base: Omit<Project, "demoLabel">[] = [
     ],
   },
   {
-    id: "marmitas",
-    niche: "alimentacao",
-    audience: "Marmitas fit, congelados e cozinhas delivery",
-    title: "Loja online com controle de pedidos e do custo de cada prato",
-    whatIs:
-      "Uma loja online onde o cliente monta o pedido de marmitas no carrinho, mais uma tela de controle para você ver os pedidos e saber quanto custa e quanto sobra em cada prato.",
-    problem: "Pedido perdido no meio das conversas do WhatsApp e margem de lucro no chute.",
-    solution: "Cardápio online com carrinho: o pedido chega pronto numa tela de controle, e a ficha de custo mostra quanto custa e quanto sobra em cada marmita.",
-    benefits: [
-      "O cliente monta a marmita no carrinho e o pedido chega pronto para você preparar.",
-      "Saiba quanto custa cada marmita e quanto sobra de lucro, em vez de chutar a margem.",
-      "Veja no caixa o que entrou, o que saiu e o saldo do período.",
-      "Fale com o cliente direto pelo WhatsApp, a partir do próprio pedido.",
-    ],
-    forWho: [
-      "Você vende marmitas, congelados ou comida por encomenda e recebe os pedidos pelo WhatsApp.",
-      "Hoje não sabe ao certo quanto sobra de lucro em cada prato.",
-    ],
-    notForWho: [{ text: "Você tem salão com mesas e precisa de comanda.", seeId: "restaurante-mesa" }],
-    includes: [
-      "Loja online com catálogo, fotos e carrinho",
-      "Tela de controle com os pedidos e contato direto com o cliente pelo WhatsApp",
-      "Controle de caixa, despesas e estoque",
-      "Ficha de custo de cada prato (o custo de cada ingrediente, para saber quanto sobra)",
-      "Relatórios em PDF",
-      "Treinamento e acompanhamento nos primeiros dias de uso",
-    ],
-    needsFromYou: [
-      "Lista de pratos com preços e fotos",
-      "Ingredientes e custo de cada prato, para calcular o lucro",
-      "Logo e cores, se tiver",
-    ],
-    timeline: TIMELINE,
-    pricingModel: PRICING,
-    extras: [
-      "Catálogo com fotos e controle de estoque",
-      "Despesas e relatórios em PDF",
-      // TODO(fabio): confirmar que a adequação à LGPD está realmente implementada antes de manter este item.
-      "Consentimento e pedidos de dados do cliente (LGPD)",
-    ],
-  },
-  {
     id: "consultorio-psi",
+    services: ["sistemas"],
+    stack: ["React", "Vite", "PWA"],
     niche: "saude",
     audience: "Psicólogos e terapeutas",
     title: "Consultório organizado: agenda, prontuário e financeiro",
@@ -242,21 +210,47 @@ const base: Omit<Project, "demoLabel">[] = [
   },
   {
     id: "clinica-odonto",
+    services: ["sites", "sistemas", "integracoes"],
+    stack: ["Next.js", "Prisma", "Postgres", "Auth.js", "n8n", "OpenAI"],
     niche: "saude",
-    audience: "Clínicas odontológicas e de saúde",
-    title: "Site da clínica, gestão e agendamento pelo WhatsApp",
+    audience: "Clínicas odontológicas com uma ou mais unidades",
+    title: "Site e sistema de gestão da clínica odontológica",
     whatIs:
-      "Um site para a clínica e uma tela de controle para organizar agenda, pacientes, orçamentos e cobranças. Os pedidos de agendamento feitos pelo WhatsApp chegam nessa tela para você confirmar.",
-    problem: "Agenda bagunçada, orçamento esquecido na gaveta e paciente que some.",
-    solution: "Um site que capta pacientes e uma tela onde os pedidos de agendamento do WhatsApp viram consultas confirmadas.",
+      "Um site que leva o paciente a pedir avaliação pelo WhatsApp da unidade, mais um sistema para a equipe: agenda por profissional e cadeira, ficha e prontuário do paciente, orçamentos, termos de consentimento e o checklist do dia.",
+    problem: "Paciente que pede horário e ninguém responde, falta sem aviso, orçamento esquecido e termo assinado em papel que some.",
+    solution:
+      "Os pedidos do site viram leads num quadro, a agenda confirma pelo WhatsApp e lê a resposta, e cada orçamento, termo e tratamento fica registrado na ficha do paciente.",
     benefits: [
-      "Os pedidos de agendamento chegam organizados, prontos para confirmar.",
-      "Acompanhe orçamentos e faturas para nada ficar esquecido.",
-      "Veja quanto entrou, quanto falta receber e quem está em atraso.",
+      "Leads do site num quadro, com alerta quando o primeiro contato passa da meta.",
+      "Confirmação da consulta pelo WhatsApp da clínica: a resposta do paciente atualiza a agenda.",
+      "Orçamento com aprovação por item, e o que exige aval do dentista não fecha sem ele.",
+      "Termo de consentimento assinado pelo celular, e a consulta só é finalizada com ele.",
+    ],
+    forWho: [
+      "Sua clínica recebe pedidos de horário pelo WhatsApp e alguns se perdem.",
+      "Tem mais de um dentista, cadeira ou unidade e a agenda vira confusão.",
+      "Quer orçamento, prontuário e termos num lugar só, sem papel solto.",
+    ],
+    includes: [
+      "Site da clínica com serviços, equipe, dúvidas e o WhatsApp de cada unidade",
+      "Agenda da semana e do dia, por profissional ou por cadeira",
+      "Ficha do paciente com prontuário, odontograma e alertas de saúde",
+      "Orçamentos, termos de consentimento e checklist de expediente",
+      "Treinamento da equipe e acompanhamento nos primeiros dias de uso",
+    ],
+    needsFromYou: ["Unidades, horários e profissionais", "Procedimentos e preços", "Logo, cores e fotos da clínica, se tiver"],
+    // TODO(fabio): sem o prazo padrão de 24 h: a implantação deste sistema é maior. Preencher com o prazo real, se quiser mostrar.
+    extras: [
+      "Papéis e permissões por função (gestor, dentista, recepção, financeiro)",
+      "Procedimentos da tabela TUSS e tabelas de preço por convênio",
+      "Financeiro com caixa e comissões",
+      "Assistente de IA que responde a equipe pelo manual da clínica",
     ],
   },
   {
     id: "condominio",
+    services: ["sistemas"],
+    stack: ["React", "TanStack Start", "Supabase", "PDF"],
     niche: "condominios",
     audience: "Síndicos e administradoras",
     title: "Gestão financeira do condomínio sem planilha",
@@ -273,6 +267,8 @@ const base: Omit<Project, "demoLabel">[] = [
   },
   {
     id: "reservas-passeios",
+    services: ["sites", "sistemas"],
+    stack: ["Next.js", "Prisma", "Postgres", "Auth.js", "Docker"],
     niche: "turismo",
     audience: "Passeios, turismo e experiências com hora marcada",
     title: "Reserva online de passeios, com agenda e controle de vagas",
@@ -290,6 +286,8 @@ const base: Omit<Project, "demoLabel">[] = [
   },
   {
     id: "escritorio-advocacia",
+    services: ["sites", "integracoes"],
+    stack: ["React", "Vite", "WhatsApp"],
     niche: "advocacia",
     audience: "Escritórios de advocacia",
     title: "Site de captação com formulário que envia o caso pelo WhatsApp",
@@ -315,8 +313,8 @@ const desktopFirst = (slides: Slide[]) => [...slides].sort((a, b) => Number(a.de
 // ainda sem clientes autorizados para citar, então levam o rótulo de demonstração.
 const demoLabel = (niche: NicheId) => (primaryNiches.includes(niche) ? "Dados fictícios" : "Demonstração · dados fictícios");
 
-/** Nichos em destaque; os demais aparecem na seção "Também desenvolvo para". */
-export const primaryNiches: NicheId[] = ["restaurantes", "alimentacao"];
+/** Nichos de alimentação: mudam o texto do botão do case ("no meu negócio") e o rótulo dos prints. */
+export const primaryNiches: NicheId[] = ["restaurantes"];
 
 /**
  * Guia "qual é o seu caso?" para as soluções de restaurante.
@@ -328,8 +326,8 @@ export const tierChooser: { ifYou: string; projectId: string; tierName: string }
   { ifYou: "Tem entregadores, quer controlar o estoque e fazer o cliente voltar.", projectId: "plataforma-restaurantes", tierName: "Completo" },
 ];
 
-// Ordem na página: opções dos restaurantes (Essencial, Salão e delivery, Completo), marmitas; depois clínicas, psicólogos, condomínios.
-const ORDER = ["delivery-proprio", "restaurante-mesa", "plataforma-restaurantes", "marmitas", "clinica-odonto", "consultorio-psi", "condominio", "reservas-passeios", "escritorio-advocacia"];
+// Ordem na página: opções dos restaurantes (Essencial, Salão e delivery, Completo); depois clínicas, psicólogos, condomínios.
+const ORDER = ["delivery-proprio", "restaurante-mesa", "plataforma-restaurantes", "clinica-odonto", "consultorio-psi", "condominio", "reservas-passeios", "escritorio-advocacia"];
 
 export const projects = base.map((p) => ({ ...p, demoLabel: demoLabel(p.niche), slides: desktopFirst(shotMap[p.id] ?? []) })).sort((a, b) => ORDER.indexOf(a.id) - ORDER.indexOf(b.id));
 export type ProjectWithSlides = (typeof projects)[number];

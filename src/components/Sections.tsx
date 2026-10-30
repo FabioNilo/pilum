@@ -10,10 +10,10 @@ import {
   Palette,
   Smartphone,
   UserRound,
-  Wallet,
+  Workflow,
 } from "lucide-react";
 import { site } from "@/config";
-import { PRICING, type ProjectWithSlides } from "@/data/projects";
+import { projects, type ProjectWithSlides } from "@/data/projects";
 import type { Pain } from "@/data/segments";
 import { useGSAP } from "@gsap/react";
 import { useRef } from "react";
@@ -23,6 +23,13 @@ import { defaultMessage, waProps } from "@/lib/whatsapp";
 import { DeviceFrame } from "./DeviceFrame";
 import { PilumLogo } from "./Logo";
 
+const navLinks = [
+  { href: "#servicos", label: "Serviços" },
+  { href: "#portfolio", label: "Portfólio" },
+  { href: "#como-funciona", label: "Como trabalhamos" },
+  { href: "#quem-somos", label: "Quem somos" },
+];
+
 export function Header() {
   return (
     <header className="sticky top-0 z-40 border-b border-paper-line/80 bg-paper/85 backdrop-blur">
@@ -30,13 +37,12 @@ export function Header() {
         <a href="#topo" className="rounded-sm" aria-label={`${site.brand}, voltar ao início`}>
           <PilumLogo className="text-[1.6rem]" />
         </a>
-        <nav className="flex items-center gap-1 text-sm sm:gap-4">
-          <a href="#solucoes" className="hidden rounded-full px-3 py-2 text-ink-soft hover:text-ink sm:block">
-            Soluções
-          </a>
-          <a href="#como-funciona" className="hidden rounded-full px-3 py-2 text-ink-soft hover:text-ink sm:block">
-            Como funciona
-          </a>
+        <nav className="flex items-center gap-1 text-sm lg:gap-2">
+          {navLinks.map(({ href, label }) => (
+            <a key={href} href={href} className="hidden rounded-full px-3 py-2 text-ink-soft hover:text-ink lg:block">
+              {label}
+            </a>
+          ))}
           <a {...waProps(defaultMessage, "header")} className="btn-dark py-2">
             <MessageCircle className="h-4 w-4" aria-hidden />
             <span>Conversar</span>
@@ -78,25 +84,25 @@ export function Hero({ projects }: { projects: ProjectWithSlides[] }) {
     <section id="topo" ref={root} className="relative overflow-hidden">
       <div className="container grid items-center gap-12 pb-16 pt-12 sm:pt-20 lg:grid-cols-2 lg:pb-24">
         <div>
-          <p data-hero className="eyebrow">Sistemas sob medida para pequenos negócios</p>
+          <p data-hero className="eyebrow">{site.role}</p>
           <p data-hero className="mt-2 flex items-center gap-1.5 text-sm text-ink-mute">
             <MapPin className="h-4 w-4" aria-hidden />
-            Ilhéus e Itabuna – BA
+            Ilhéus e Itabuna – BA · atendimento em todo o Brasil
           </p>
           <h1 data-hero className="mt-4 text-[2.6rem] uppercase leading-[1.02] sm:text-6xl lg:text-[4.1rem]">
-            Menos planilha e papel. <span className="text-accent">Mais vendas e controle.</span>
+            Do processo ao sistema. <span className="text-accent">Feito para acertar.</span>
           </h1>
           <p data-hero className="mt-5 max-w-xl text-lg text-ink-soft">
-            Antes de escrever código, entendo onde o seu negócio perde tempo e dinheiro. O sistema mira exatamente ali,
-            e você acompanha tudo pelo celular.
+            Desenvolvemos sistemas, sites e automações para pequenos negócios e empresas. Antes de escrever código,
+            entendemos onde a operação perde tempo e dinheiro, e o software mira exatamente ali.
           </p>
           <div data-hero className="mt-8 flex flex-wrap gap-3">
             <a className="btn-primary" {...waProps(defaultMessage, "hero")}>
               <MessageCircle className="h-4 w-4" aria-hidden />
               Falar no WhatsApp
             </a>
-            <a className="btn-ghost" href="#seu-negocio">
-              Ver soluções
+            <a className="btn-ghost" href="#portfolio">
+              Ver portfólio
               <ArrowDown className="h-4 w-4" aria-hidden />
             </a>
           </div>
@@ -108,9 +114,6 @@ export function Hero({ projects }: { projects: ProjectWithSlides[] }) {
               </li>
             ))}
           </ul>
-          <p data-hero className="mt-3 max-w-md text-xs text-ink-mute">
-            A taxa da operadora de pagamento (Pix/cartão) é cobrada à parte pela própria operadora.
-          </p>
         </div>
 
         {desktop && (
@@ -132,9 +135,9 @@ export function Hero({ projects }: { projects: ProjectWithSlides[] }) {
 }
 
 const heroPoints = [
-  { icon: ClipboardList, text: "Pedidos, agenda e caixa organizados num painel" },
-  { icon: Wallet, text: "Sem comissão da Pilum sobre suas vendas" },
-  { icon: Smartphone, text: "Instala no celular como app, para você e para o seu cliente" },
+  { icon: ClipboardList, text: `${projects.length} sistemas no portfólio, de restaurantes a condomínios` },
+  { icon: Workflow, text: "Integra com WhatsApp, pagamento online e impressoras" },
+  { icon: Smartphone, text: "Instala no celular como app, para a equipe e para o cliente" },
 ];
 
 // Cada dor leva à solução que a resolve. As dores de cada nicho ficam em src/data/segments.ts.
@@ -194,9 +197,11 @@ export function PainStrip({ pains, onPick }: { pains: Pain[]; onPick: (projectId
 }
 
 const steps = [
-  { title: "Conversa", text: "Você me conta como o negócio funciona hoje e onde perde tempo ou dinheiro." },
+  { title: "Conversa", text: "Você conta como a empresa funciona hoje e onde perde tempo ou dinheiro. O orçamento sai depois dessa conversa." },
+  // TODO(fabio): confirmar se o protótipo em 24 horas vale também para projetos maiores (empresas médias).
   { title: "Protótipo", text: "Primeira versão em menos de 24 horas, com a sua marca. Você testa antes de decidir; ajustes e novas funções a gente combina numa reunião." },
-  { title: "No ar", text: "Publico, treino sua equipe e acompanho os primeiros dias de uso." },
+  { title: "No ar", text: "Publicamos, treinamos a equipe e acompanhamos os primeiros dias de uso." },
+  { title: "Evolução", text: "Com o suporte mensal, cuidamos da hospedagem, dos ajustes e das novas funções que o negócio pedir." },
 ];
 
 export function HowItWorks() {
@@ -204,9 +209,9 @@ export function HowItWorks() {
   return (
     <section id="como-funciona" ref={root} className="section scroll-mt-16 bg-ink text-paper">
       <div className="container">
-        <p className="eyebrow text-accent-bright">Como funciona</p>
+        <p className="eyebrow text-accent-bright">Como trabalhamos</p>
         <h2 className="mt-2 max-w-2xl text-3xl uppercase text-paper sm:text-5xl">Do primeiro papo ao sistema rodando</h2>
-        <ol className="mt-10 grid gap-6 md:grid-cols-3">
+        <ol className="mt-10 grid gap-6 md:grid-cols-2 lg:grid-cols-4">
           {steps.map((s, i) => (
             <li key={s.title} data-reveal className="rounded-2xl border border-paper/10 bg-ink-raised p-6">
               <span className="font-mono text-sm font-bold tracking-[0.2em] text-accent-bright">0{i + 1}</span>
@@ -215,43 +220,32 @@ export function HowItWorks() {
             </li>
           ))}
         </ol>
-
-        <div data-reveal className="mt-8 rounded-2xl border border-paper/10 p-6">
-          <h3 className="font-mono text-xs font-bold uppercase tracking-[0.2em] text-accent-bright">Como funciona o valor</h3>
-          <ul className="mt-4 space-y-2.5 text-paper/80">
-            {/* TODO(fabio): confirmar o modelo (só mensalidade) e o que está incluso. O texto vem de PRICING em src/data/projects.ts. */}
-            <li>{PRICING}</li>
-            {/* TODO(fabio): confirmar o que realmente fica com o cliente (dados, domínio, painel, contas de hospedagem). */}
-            <li>Você pode comprar um domínio ou usar um domínio gratuito.</li>
-            <li>A taxa da operadora de pagamento (Pix/cartão) é definida pela operadora contratada.</li>
-          </ul>
-        </div>
       </div>
     </section>
   );
 }
 
-const whyMe = [
+const whyUs = [
   {
     icon: UserRound,
-    title: "Atendimento direto comigo, de Ilhéus e Itabuna",
-    text: "Você fala com quem desenvolve o sistema, sem intermediário.",
+    title: "Você fala com quem desenvolve",
+    text: "Sem intermediário nem central de atendimento: o contato é direto com quem escreve o código.",
   },
   {
     icon: Palette,
-    title: "Adapto à sua marca e ao seu jeito de trabalhar",
-    text: "Cores, logo e o seu fluxo do dia a dia, não um modelo engessado.",
+    title: "Feito para o seu processo",
+    text: "Sua marca e o fluxo do dia a dia da sua empresa, não um modelo engessado.",
   },
   {
     icon: FlaskConical,
-    title: "Você testa o protótipo antes de decidir",
-    text: "Só segue em frente se gostar do que viu funcionando.",
+    title: "Você testa antes de decidir",
+    text: "O protótipo vem antes do compromisso: só segue em frente se gostar do que viu funcionando.",
   },
   {
-    // TODO(fabio): confirmar o suporte por WhatsApp e, se for citar, o prazo de resposta que você consegue cumprir sempre.
+    // TODO(fabio): confirmar o suporte por WhatsApp e, se for citar, o prazo de resposta que vocês conseguem cumprir sempre.
     icon: LifeBuoy,
-    title: "Suporte por WhatsApp",
-    text: "Dúvidas do dia a dia resolvidas por mensagem.",
+    title: "Suporte de quem conhece o código",
+    text: "Dúvidas e ajustes resolvidos por WhatsApp, por quem construiu o sistema.",
   },
 ];
 
@@ -260,10 +254,10 @@ export function Differentials() {
   return (
     <section ref={root} className="section">
       <div className="container">
-        <p className="eyebrow">Por que trabalhar comigo</p>
+        <p className="eyebrow">Por que a {site.brand}</p>
         <h2 className="mt-2 max-w-2xl text-3xl uppercase sm:text-5xl">Atendimento de perto, de quem desenvolve</h2>
         <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {whyMe.map(({ icon: Icon, title, text }) => (
+          {whyUs.map(({ icon: Icon, title, text }) => (
             <div key={title} data-reveal className="rounded-2xl border border-paper-line bg-paper-card p-5">
               <Icon className="h-6 w-6 text-accent" aria-hidden />
               <h3 className="mt-3 font-bold leading-snug">{title}</h3>
@@ -279,8 +273,8 @@ export function Differentials() {
 type CtaProps = { title?: string; text?: string; message?: string };
 
 export function CtaFooter({
-  title = "Vamos resolver o gargalo do seu negócio?",
-  text = "Me chame no WhatsApp, conte como funciona hoje e eu mostro como a solução ficaria para você. Sem compromisso.",
+  title = "Vamos resolver o gargalo da sua empresa?",
+  text = "Chame a gente no WhatsApp, conte como funciona hoje e mostramos como a solução ficaria para você. Orçamento sem compromisso.",
   message = defaultMessage,
 }: CtaProps) {
   const root = useReveal<HTMLElement>("[data-reveal]", { y: 32, duration: 0.8 });
@@ -301,7 +295,8 @@ export function CtaFooter({
           <div>
             <PilumLogo variant="dark" tagline className="text-[2rem]" />
             <p className="mt-4">
-              {site.role}, por <span className="text-paper">{site.name}</span>.
+              <span className="text-paper">{site.brand}</span> · {site.role}
+              {site.cnpj && <> · CNPJ {site.cnpj}</>}
             </p>
           </div>
           <ul className="flex flex-wrap gap-x-5 gap-y-2">

@@ -21,4 +21,4 @@ export function waProps(message: string, ref: string) {
 }
 
 export const defaultMessage =
-  "Olá, Fabio! Vi seu portfólio e quero conversar sobre um sistema para o meu negócio.";
+  "Olá, Pilum Code! Vi o portfólio de vocês e quero conversar sobre um projeto para a minha empresa.";

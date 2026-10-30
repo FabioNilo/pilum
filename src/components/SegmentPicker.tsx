@@ -58,16 +58,16 @@ export function SegmentPicker({ value, onChange, contentId }: Props) {
       <section id="seu-negocio" ref={root} aria-labelledby="seu-negocio-titulo" className="scroll-mt-16 py-12 sm:py-16">
         <div className="container">
           <p data-reveal className="eyebrow text-center">
-            Para quem é
+            Soluções por setor
           </p>
           <h2 data-reveal id="seu-negocio-titulo" className="mt-2 text-center text-3xl uppercase sm:text-5xl">
             Qual é o seu negócio?
           </h2>
           <p data-reveal className="mx-auto mt-3 max-w-xl text-center text-ink-soft">
-            Toque no seu e a página mostra só o que faz sentido para você.
+            Escolha o seu setor e veja os problemas que já resolvemos, como o sistema funciona no dia a dia e por onde começar.
           </p>
 
-          <div role="radiogroup" aria-labelledby="seu-negocio-titulo" className="mt-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+          <div role="radiogroup" aria-labelledby="seu-negocio-titulo" className="mt-8 grid gap-3 sm:grid-cols-3">
             {foodSegments.map(({ id, icon: Icon, label, desc }) => {
               const active = id === value;
               return (

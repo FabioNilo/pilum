@@ -2,7 +2,6 @@ import { execSync } from "node:child_process";
 import type { Page } from "playwright";
 import { FX, type Target } from "./lib";
 import { firstPaidRevenueId } from "./fixtures/condo";
-import { marmitasActions } from "./fixtures/marmitas";
 
 const EDLA = "C:/Users/cippa/Desktop/Edla";
 const NEIDE = "C:/Users/cippa/OneDrive/Documentos/neide";
@@ -34,6 +33,8 @@ function pg(db: string, sql: string) {
 }
 
 const PLATAFORMA_DB = "postgres://postgres:postgres@127.0.0.1:55432/plataforma";
+// Usuário sem BYPASSRLS do próprio projeto da clínica (senha de desenvolvimento, só local).
+const CLINICA_APP_DB = "postgresql://clinica_app:clinica_app_dev@localhost:5432/clinica_shots";
 
 export const targets: Target[] = [
   {
@@ -139,110 +140,76 @@ export const targets: Target[] = [
     },
   },
   {
-    // Front de marmitas no modo n8n, contra a API local (banco "marmitas", fotos e nomes
-    // do próprio projeto, preços fictícios). Login pelo Supabase simulado (scripts/fixtures/supabase.ts);
-    // CRM de pedidos, caixa e financeiro respondem com scripts/fixtures/marmitas.ts.
-    id: "marmitas",
-    cwd: `${NEIDE}/marmitas-fit-express`,
-    cmd: [`cd /d C:\\get\\restaurantemodelo && npx tsx --import file:///${LOCAL}/neon-local.mjs server/node.ts`, VITE],
-    port: 5205,
-    env: {
-      ENV_FILE: `${LOCAL}/marmitas.env`,
-      DATABASE_URL: "postgres://postgres:postgres@127.0.0.1:55432/marmitas",
-      NEON_LOCAL_ENDPOINT: "http://127.0.0.1:4446/sql",
-      SESSION_SECRET: "local-shots-secret-0123456789abcdef0123456789",
-      PORT: "8789",
-      VITE_SUPABASE_URL: `${FX}/marmitas-sb`,
-      VITE_SUPABASE_PUBLISHABLE_KEY: "fx-anon-key",
-      VITE_SUPABASE_PROJECT_ID: "fx",
-      VITE_CHIPTRACK_WEBHOOK_BASE_URL: "/api",
-      VITE_CHIPTRACK_WEBHOOK_KEY: "local",
-      VITE_MARMITAS_PUBLIC_API: "n8n",
-      VITE_MARMITAS_AUTH_API: "n8n",
-      VITE_MARMITAS_ADMIN_API: "n8n",
-    },
-    runtimeConfig: {
-      VITE_SUPABASE_URL: `${FX}/marmitas-sb`,
-      VITE_SUPABASE_PUBLISHABLE_KEY: "fx-anon-key",
-      VITE_SUPABASE_PROJECT_ID: "fx",
-      VITE_CHIPTRACK_WEBHOOK_BASE_URL: "/api",
-      VITE_CHIPTRACK_WEBHOOK_KEY: "local",
-      VITE_MARMITAS_PUBLIC_API: "n8n",
-      VITE_MARMITAS_AUTH_API: "n8n",
-      VITE_MARMITAS_ADMIN_API: "n8n",
-    },
-    proxy: { prefix: "/api", to: "http://127.0.0.1:8789", rewrite: [/^\/api\/marmitas\//, "/api/massas/"],
-      actions: marmitasActions,
-      // Na API local "mostrar_aviso_fechado" é sempre true; aqui só deve aparecer com a loja fechada.
-      transform: (path, json) =>
-        path.endsWith("/site-status") && json?.data ? { ...json, data: { ...json.data, mostrar_aviso_fechado: !json.data.entregas_abertas_agora } } : json,
-    },
-    files: { prefix: "/__fx/marmitas", dir: `${NEIDE}/marmitas-fit-express/data/n8n-catalog-images` },
-    async init(context) {
-      await context.addInitScript(() => localStorage.setItem("lead_modal_dismissed", String(Date.now())));
-    },
-    async run({ page, goto, shot }) {
-      const m = await page("mobile");
-      await goto(m, "/");
-      await shot(m, "inicio-mobile", "Loja online com a sua marca, pronta para o celular");
-      await scrollTo(m, "#cardapio", 0);
-      await shot(m, "cardapio-mobile", "Cardápio com fotos reais dos pratos e carrinho");
-
-      const d = await page("desktop");
-      await goto(d, "/");
-      await scrollTo(d, "#cardapio", -20);
-      await shot(d, "cardapio", "Catálogo organizado por categoria, com estoque controlado");
-      await goto(d, "/auth");
-      await fillLogin(d, "admin@exemplo.com", "demo12345", "#email", "#password");
-      await d.waitForURL((u) => u.pathname.startsWith("/admin"), { timeout: 30_000 });
-      await goto(d, "/admin");
-      for (const [tab, name, caption] of [
-        ["Pedidos", "pedidos", "CRM de pedidos: status, cliente e contato direto pelo WhatsApp"],
-        ["Caixa", "caixa", "Caixa com entradas, saídas e saldo do período"],
-        ["Financeiro", "financeiro", "Financeiro: faturamento, custos, despesas e margem"],
-      ] as const) {
-        await d.getByRole("tab", { name: new RegExp(tab, "i") }).first().click();
-        await d.waitForTimeout(2500);
-        const box = await d.getByRole("tablist").first().boundingBox();
-        await d.mouse.move(720, 450);
-        if (box) await d.mouse.wheel(0, box.y - 16);
-        await d.waitForTimeout(600);
-        await shot(d, name, caption);
-      }
-    },
-  },
-  {
-    // Front da clínica contra o servidor de fixtures (scripts/fixtures/dental.ts), nada de n8n/Supabase reais.
+    // Next.js + Prisma (C:/get/clinica-odonto) contra uma CÓPIA do banco de desenvolvimento (clinica_shots),
+    // anonimizada por scripts/local/clinica-demo.sql. n8n, Neon e WhatsApp desligados. Veja o README.
     id: "clinica-odonto",
-    cwd: `${NEIDE}/dental-aura-clinic`,
-    cmd: VITE,
+    cwd: "C:/get/clinica-odonto",
+    cmd: "npx next dev -p {port} -H 127.0.0.1",
     port: 5206,
     env: {
-      VITE_DENTAL_AURA_API_BASE_URL: `${FX}/dental`,
-      VITE_SUPABASE_URL: `${FX}/dental-sb`,
-      VITE_SUPABASE_PUBLISHABLE_KEY: "fx-anon-key",
-      VITE_SUPABASE_PROJECT_ID: "fx",
+      DATABASE_URL: CLINICA_APP_DB,
+      DATABASE_URL_UNPOOLED: "postgresql://clinica:clinica@localhost:5432/clinica_shots",
+      NEON_APP_DATABASE_URL: CLINICA_APP_DB,
+      AUTH_SECRET: "local-shots-auth-secret-0123456789abcdef",
+      AUTH_TRUST_HOST: "true",
+      AUTH_URL: "http://127.0.0.1:5206",
+      SITE_URL: "http://127.0.0.1:5206",
+      SITE_NOINDEX: "1",
+      N8N_CHAT_WEBHOOK_URL: "http://127.0.0.1:9/disabled",
+      N8N_ASSISTANT_V2_WEBHOOK_URL: "http://127.0.0.1:9/disabled",
+      N8N_INGEST_WEBHOOK_URL: "http://127.0.0.1:9/disabled",
+      N8N_CHAT_SECRET: "disabled-local",
+      WEBHOOK_DOCS_TOKEN: "disabled-local",
+      WHATSAPP_MODE: "",
+      NEON_BRANCH: "disabled",
     },
+    replace: [
+      [/MAX\s*dente(\s+Odontologia)?/gi, "Clínica Exemplo"],
+      [/Ilh[ée]us/g, "Cidade A"],
+      [/Itabuna/g, "Cidade B"],
+    ],
+    // Faixa "Demonstração" do painel: na cópia até os leads são fictícios, então ela só confundiria o print.
+    css: `main > div[role="status"].bg-amber-50 { display: none !important; }`,
     async run({ page, goto, shot }) {
       const d = await page("desktop");
       await goto(d, "/");
-      await shot(d, "site", "Site da clínica com botão de agendamento");
+      await shot(d, "site", "Site da clínica com agendamento pelo WhatsApp de cada unidade");
 
       const m = await page("mobile");
       await goto(m, "/");
       await shot(m, "site-mobile", "Site pensado para o paciente que chega pelo celular");
 
-      await goto(d, "/admin/login");
-      await fillLogin(d, "admin@clinica.com", "demo12345");
-      await d.waitForURL((u) => u.pathname.startsWith("/admin") && !u.pathname.includes("login"), { timeout: 30_000 });
-      await goto(d, "/admin");
-      await shot(d, "visao-geral", "Visão geral do dia: solicitações, confirmações e próximos pacientes");
-      await goto(d, "/admin/solicitacoes");
-      await shot(d, "solicitacoes", "Pedidos de agendamento vindos do assistente de WhatsApp");
-      await goto(d, "/admin/agenda");
-      await shot(d, "agenda", "Agenda por profissional, com status de cada consulta");
-      await goto(d, "/admin/financeiro");
-      await shot(d, "financeiro", "Financeiro: faturamento, recebimentos, orçamentos e inadimplentes");
+      await goto(d, "/login");
+      await fillLogin(d, "gestor@exemplo.com", "demo12345", "#email", "#password");
+      await d.waitForURL((u) => !u.pathname.startsWith("/login"), { timeout: 120_000 });
+      // Demonstração recriada a cada captura: agenda e orçamentos sempre relativos a hoje.
+      await goto(d, "/admin/v2");
+      await d.getByRole("button", { name: /Restaurar demonstração|Montar demonstração/ }).first().click();
+      await d.getByText(/Demonstração (restaurada|montada)/).first().waitFor({ timeout: 120_000 });
+
+      await goto(d, "/admin/v2");
+      await shot(d, "painel", "Painel do dia: consultas, ocupação das cadeiras, orçamentos e metas");
+      await goto(d, "/admin/v2/agenda");
+      await shot(d, "agenda", "Agenda da semana com status, remarcações e termos pendentes");
+      await goto(d, "/admin/v2/agenda?modo=dia");
+      await shot(d, "agenda-dia", "Agenda do dia por profissional ou por cadeira");
+      await goto(d, "/admin/v2/leads");
+      await shot(d, "leads", "Leads do site num quadro, com alerta de primeiro contato atrasado");
+      await goto(d, "/admin/v2/whatsapp");
+      await shot(d, "whatsapp", "Confirmação de consultas pelo WhatsApp, com leitura da resposta");
+      await goto(d, "/admin/v2/expediente");
+      await shot(d, "expediente", "Checklist do dia: termos pendentes e o que a recepção precisa resolver");
+      await goto(d, "/admin/v2/orcamentos");
+      // A última div que contém o selo é a própria linha do orçamento (as anteriores são os contêineres da lista).
+      await d.locator("div").filter({ has: d.getByText("Aprovado em parte", { exact: true }) }).last().getByRole("link", { name: "Abrir" }).click();
+      await d.waitForURL(/\/admin\/v2\/orcamentos\/[^/]+$/, { timeout: 60_000 });
+      await goto(d, new URL(d.url()).pathname);
+      await shot(d, "orcamento", "Orçamento com aprovação por item e parcelamento");
+      await goto(d, "/admin/v2/pacientes?q=Ana");
+      await d.getByRole("link", { name: /Ana Beatriz Souza/ }).first().click();
+      await d.waitForURL(/\/admin\/v2\/pacientes\/[^/]+$/, { timeout: 60_000 });
+      await goto(d, `${new URL(d.url()).pathname}/clinico`);
+      await shot(d, "prontuario", "Prontuário com odontograma e alertas de saúde do paciente");
     },
   },
   {

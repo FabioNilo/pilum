@@ -132,42 +132,10 @@
       "device": "mobile"
     }
   ],
-  "marmitas": [
-    {
-      "src": "/shots/marmitas/01-inicio-mobile.webp",
-      "caption": "Loja online com a sua marca, pronta para o celular",
-      "device": "mobile"
-    },
-    {
-      "src": "/shots/marmitas/02-cardapio-mobile.webp",
-      "caption": "Cardápio com fotos reais dos pratos e carrinho",
-      "device": "mobile"
-    },
-    {
-      "src": "/shots/marmitas/03-cardapio.webp",
-      "caption": "Catálogo organizado por categoria, com estoque controlado",
-      "device": "desktop"
-    },
-    {
-      "src": "/shots/marmitas/04-pedidos.webp",
-      "caption": "CRM de pedidos: status, cliente e contato direto pelo WhatsApp",
-      "device": "desktop"
-    },
-    {
-      "src": "/shots/marmitas/05-caixa.webp",
-      "caption": "Caixa com entradas, saídas e saldo do período",
-      "device": "desktop"
-    },
-    {
-      "src": "/shots/marmitas/06-financeiro.webp",
-      "caption": "Financeiro: faturamento, custos, despesas e margem",
-      "device": "desktop"
-    }
-  ],
   "clinica-odonto": [
     {
       "src": "/shots/clinica-odonto/01-site.webp",
-      "caption": "Site da clínica com botão de agendamento",
+      "caption": "Site da clínica com agendamento pelo WhatsApp de cada unidade",
       "device": "desktop"
     },
     {
@@ -176,23 +144,43 @@
       "device": "mobile"
     },
     {
-      "src": "/shots/clinica-odonto/03-visao-geral.webp",
-      "caption": "Visão geral do dia: solicitações, confirmações e próximos pacientes",
+      "src": "/shots/clinica-odonto/03-painel.webp",
+      "caption": "Painel do dia: consultas, ocupação das cadeiras, orçamentos e metas",
       "device": "desktop"
     },
     {
-      "src": "/shots/clinica-odonto/04-solicitacoes.webp",
-      "caption": "Pedidos de agendamento vindos do assistente de WhatsApp",
+      "src": "/shots/clinica-odonto/04-agenda.webp",
+      "caption": "Agenda da semana com status, remarcações e termos pendentes",
       "device": "desktop"
     },
     {
-      "src": "/shots/clinica-odonto/05-agenda.webp",
-      "caption": "Agenda por profissional, com status de cada consulta",
+      "src": "/shots/clinica-odonto/05-agenda-dia.webp",
+      "caption": "Agenda do dia por profissional ou por cadeira",
       "device": "desktop"
     },
     {
-      "src": "/shots/clinica-odonto/06-financeiro.webp",
-      "caption": "Financeiro: faturamento, recebimentos, orçamentos e inadimplentes",
+      "src": "/shots/clinica-odonto/06-leads.webp",
+      "caption": "Leads do site num quadro, com alerta de primeiro contato atrasado",
+      "device": "desktop"
+    },
+    {
+      "src": "/shots/clinica-odonto/07-whatsapp.webp",
+      "caption": "Confirmação de consultas pelo WhatsApp, com leitura da resposta",
+      "device": "desktop"
+    },
+    {
+      "src": "/shots/clinica-odonto/08-expediente.webp",
+      "caption": "Checklist do dia: termos pendentes e o que a recepção precisa resolver",
+      "device": "desktop"
+    },
+    {
+      "src": "/shots/clinica-odonto/09-orcamento.webp",
+      "caption": "Orçamento com aprovação por item e parcelamento",
+      "device": "desktop"
+    },
+    {
+      "src": "/shots/clinica-odonto/10-prontuario.webp",
+      "caption": "Prontuário com odontograma e alertas de saúde do paciente",
       "device": "desktop"
     }
   ],

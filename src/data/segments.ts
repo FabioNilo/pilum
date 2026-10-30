@@ -43,12 +43,12 @@ import {
 import { tierChooser } from "./projects";
 
 /**
- * Os públicos da landing: 3 de alimentação (em destaque) e 4 em "Outro negócio".
+ * Os públicos da landing: 2 de alimentação (em destaque) e 4 em "Outro negócio".
  * Cada um vê as próprias dores, o antes e depois, a jornada animada, o app no celular, as soluções e o CTA.
  * Os textos são rascunhos: revise à vontade, o layout se ajusta.
  * TODO(fabio): revisar todos os textos deste arquivo antes de publicar.
  */
-export type SegmentId = "restaurantes" | "lanchonetes" | "marmitas" | "clinicas" | "condominios" | "turismo" | "advocacia";
+export type SegmentId = "restaurantes" | "lanchonetes" | "clinicas" | "condominios" | "turismo" | "advocacia";
 
 /** "food" aparece nos 3 cartões principais; "other" fica dentro de "Outro negócio". */
 export type SegmentGroup = "food" | "other";
@@ -180,7 +180,7 @@ export const segments: Segment[] = [
         messages: [
           { text: "Boa noite! Ainda dá pra pedir entrega?", time: "19:42" },
           { text: "Quero 2 parmegianas, uma sem cebola", time: "19:43" },
-          { text: "Qual a taxa pro Pontal?", time: "19:44" },
+          { text: "Qual a taxa pro Jardim Atlântico?", time: "19:44" },
           { text: "Já respondo! Um momento 🙏", time: "19:51", mine: true },
           { text: "Manda o cardápio de novo por favor", time: "19:52" },
           { text: "Cadê meu pedido? Já faz 50 min", time: "20:31" },
@@ -193,7 +193,7 @@ export const segments: Segment[] = [
         columns: ["Novos", "Na cozinha", "Pronto / saiu"],
         orders: [
           { id: "#128", who: "Mesa 4", items: "2x Parmegiana · 1x Suco", col: 0 },
-          { id: "#129", who: "Delivery · Pontal", items: "1x Picanha · 2x Refri", col: 0 },
+          { id: "#129", who: "Delivery · Jardim", items: "1x Picanha · 2x Refri", col: 0 },
           { id: "#125", who: "Mesa 7", items: "1x Moqueca", col: 1 },
           { id: "#126", who: "Delivery · Centro", items: "3x Hambúrguer", col: 1 },
           { id: "#122", who: "Mesa 2", items: "2x Feijoada", col: 2 },
@@ -253,8 +253,8 @@ export const segments: Segment[] = [
     },
     cta: {
       title: "Vamos organizar o salão e o delivery do seu restaurante?",
-      text: "Me chame no WhatsApp, conte como funciona hoje e eu mostro como a solução ficaria para você. Sem compromisso.",
-      message: "Olá, Fabio! Tenho um restaurante/bar e quero ver como o sistema ficaria no meu negócio.",
+      text: "Chame a gente no WhatsApp, conte como funciona hoje e mostramos como a solução ficaria para você. Sem compromisso.",
+      message: "Olá, Pilum Code! Tenho um restaurante/bar e quero ver como o sistema ficaria no meu negócio.",
     },
   },
   {
@@ -302,7 +302,7 @@ export const segments: Segment[] = [
         title: "Pedidos da lanchonete",
         unread: 18,
         messages: [
-          { text: "Oi! Vocês entregam no Malhado?", time: "12:05" },
+          { text: "Oi! Vocês entregam no Centro?", time: "12:05" },
           { text: "1 X-tudo e 1 suco de laranja", time: "12:06" },
           { text: "Pode tirar o tomate?", time: "12:06" },
           { text: "Anotado! 👍", time: "12:14", mine: true },
@@ -318,7 +318,7 @@ export const segments: Segment[] = [
         orders: [
           { id: "#311", who: "Balcão · QR", items: "1x X-tudo (sem tomate)", col: 0 },
           { id: "#312", who: "Mesa 3", items: "2x Misto · 2x Café", col: 0 },
-          { id: "#309", who: "Entrega · Malhado", items: "1x Açaí 500ml", col: 1 },
+          { id: "#309", who: "Entrega · Centro", items: "1x Açaí 500ml", col: 1 },
           { id: "#307", who: "Balcão · QR", items: "1x Tapioca · 1x Suco", col: 2 },
           { id: "#306", who: "Mesa 1", items: "1x Croissant · 1x Capuccino", col: 2 },
         ],
@@ -380,128 +380,8 @@ export const segments: Segment[] = [
     },
     cta: {
       title: "Vamos acabar com a fila e a comanda de papel?",
-      text: "Me chame no WhatsApp, conte como funciona hoje e eu mostro como ficaria na sua lanchonete. Sem compromisso.",
-      message: "Olá, Fabio! Tenho uma lanchonete/bistrô e quero ver como o sistema ficaria no meu negócio.",
-    },
-  },
-  {
-    id: "marmitas",
-    group: "food",
-    icon: CookingPot,
-    label: "Marmitas e pratos prontos",
-    short: "Marmitas",
-    desc: "Quentinhas e encomendas, só delivery",
-    pains: [
-      {
-        icon: MessagesSquare,
-        scene: "O pedido chegou no meio de 30 conversas do WhatsApp",
-        relief: "Pedidos num painel só, nada se perde.",
-        projectId: "marmitas",
-        ref: "dor-pedido-perdido",
-      },
-      {
-        icon: Clock,
-        scene: "Você só descobre quantas marmitas fazer quando o WhatsApp para de tocar",
-        relief: "Os pedidos do dia num lugar só, antes de produzir.",
-        projectId: "marmitas",
-        ref: "dor-producao",
-      },
-      {
-        icon: Calculator,
-        scene: "A margem de cada marmita é no chute",
-        relief: "A ficha de custo mostra quanto sobra em cada prato.",
-        projectId: "marmitas",
-        ref: "dor-margem",
-      },
-      {
-        icon: Percent,
-        scene: "Uma parte de cada venda fica com o aplicativo de entrega",
-        relief: "Venda direto, no seu próprio site.",
-        projectId: "delivery-proprio",
-        ref: "dor-comissao",
-      },
-    ],
-    beforeAfter: {
-      heading: "Do WhatsApp lotado ao painel organizado",
-      meter: { from: 41, bad: "encomendas soltas no WhatsApp", good: "Encomendas prontas para produzir" },
-      before: {
-        kind: "chat",
-        title: "Encomendas de marmita",
-        unread: 41,
-        messages: [
-          { text: "Bom dia! Qual o cardápio de hoje?", time: "08:12" },
-          { text: "Quero 5 fit de frango pra semana", time: "08:15" },
-          { text: "Tem sem lactose?", time: "08:20" },
-          { text: "Só um instante que já confirmo 😅", time: "09:02", mine: true },
-          { text: "Ainda dá pra encomendar pra amanhã?", time: "10:41" },
-          { text: "Mudei de ideia, troca 2 por carne", time: "10:43" },
-          { text: "Quanto fica com a entrega?", time: "10:44" },
-        ],
-      },
-      after: {
-        kind: "board",
-        title: "Painel de pedidos",
-        columns: ["Novos", "Produzindo", "Saiu p/ entrega"],
-        orders: [
-          { id: "#540", who: "Ana · Centro", items: "5x Fit frango", col: 0 },
-          { id: "#541", who: "Carlos · Pontal", items: "3x Fit carne · 2x Frango", col: 0 },
-          { id: "#537", who: "Bia · Zona Sul", items: "4x Low carb", col: 1 },
-          { id: "#538", who: "Rui · Centro", items: "2x Vegana", col: 1 },
-          { id: "#534", who: "Lia · Malhado", items: "7x Kit semanal", col: 2 },
-        ],
-      },
-      beforeCaption: "Encomenda, troca e pagamento espalhados em dezenas de conversas.",
-      afterCaption: "Cada encomenda pronta para produzir, com o cliente a um toque no WhatsApp.",
-    },
-    flow: {
-      title: "Uma encomenda, do começo ao fim",
-      ticket: { code: "#540", label: "Status da encomenda" },
-      steps: [
-        {
-          icon: ShoppingBag,
-          actor: "Cliente",
-          title: "Monta a marmita no carrinho",
-          text: "Escolhe os pratos no seu cardápio online, sem precisar te chamar.",
-          status: "Novo pedido",
-        },
-        {
-          icon: ClipboardList,
-          actor: "Você",
-          title: "O pedido chega pronto no painel",
-          text: "Itens, endereço e contato, tudo no mesmo lugar.",
-          status: "Recebido",
-        },
-        {
-          icon: CookingPot,
-          actor: "Cozinha",
-          title: "Produção com tudo à vista",
-          text: "Veja os pedidos do dia num lugar só e produza o que foi pedido.",
-          status: "Produzindo",
-        },
-        { icon: Bike, actor: "Entrega", title: "Saiu para entrega", text: "Fale com o cliente pelo WhatsApp direto do pedido.", status: "Saiu" },
-        {
-          icon: Calculator,
-          actor: "Você",
-          title: "O lucro de cada prato, sem chute",
-          text: "Ficha de custo e caixa com o que entrou, saiu e o saldo.",
-          status: "Entregue",
-        },
-      ],
-    },
-    pwa: { appName: "Sua Marmitaria", url: "suamarmitaria.com.br", audience: "clientes" },
-    solutions: {
-      title: "Soluções para marmitas e pratos prontos",
-      intro: "Loja online com carrinho e controle do custo de cada prato. Para vender direto, sem comissão.",
-      projectIds: ["marmitas", "delivery-proprio"],
-      notes: {
-        "delivery-proprio": "Alternativa mais simples: só o site de pedidos com a sua marca, se você ainda não precisa da ficha de custo.",
-      },
-      cardCta: "Ver como ficaria no meu delivery",
-    },
-    cta: {
-      title: "Vamos organizar seus pedidos e o lucro de cada marmita?",
-      text: "Me chame no WhatsApp, conte como funciona hoje e eu mostro como ficaria no seu delivery. Sem compromisso.",
-      message: "Olá, Fabio! Vendo marmitas/pratos prontos por delivery e quero ver como o sistema ficaria no meu negócio.",
+      text: "Chame a gente no WhatsApp, conte como funciona hoje e mostramos como ficaria na sua lanchonete. Sem compromisso.",
+      message: "Olá, Pilum Code! Tenho uma lanchonete/bistrô e quero ver como o sistema ficaria no meu negócio.",
     },
   },
   {
@@ -622,8 +502,8 @@ export const segments: Segment[] = [
     },
     cta: {
       title: "Vamos organizar a agenda e as cobranças da sua clínica?",
-      text: "Me chame no WhatsApp, conte como funciona hoje e eu mostro como ficaria no seu atendimento. Sem compromisso.",
-      message: "Olá, Fabio! Tenho uma clínica/consultório e quero ver como o sistema ficaria no meu atendimento.",
+      text: "Chame a gente no WhatsApp, conte como funciona hoje e mostramos como ficaria no seu atendimento. Sem compromisso.",
+      message: "Olá, Pilum Code! Tenho uma clínica/consultório e quero ver como o sistema ficaria no meu atendimento.",
     },
   },
   {
@@ -734,8 +614,8 @@ export const segments: Segment[] = [
     },
     cta: {
       title: "Vamos acabar com a planilha do condomínio?",
-      text: "Me chame no WhatsApp, conte como funciona hoje e eu mostro como ficaria no seu condomínio. Sem compromisso.",
-      message: "Olá, Fabio! Sou síndico(a)/administro condomínio e quero ver como o sistema ficaria para nós.",
+      text: "Chame a gente no WhatsApp, conte como funciona hoje e mostramos como ficaria no seu condomínio. Sem compromisso.",
+      message: "Olá, Pilum Code! Sou síndico(a)/administro condomínio e quero ver como o sistema ficaria para nós.",
     },
   },
   {
@@ -850,8 +730,8 @@ export const segments: Segment[] = [
     },
     cta: {
       title: "Vamos parar de responder “ainda tem vaga?” o dia todo?",
-      text: "Me chame no WhatsApp, conte como funciona hoje e eu mostro como ficariam as suas reservas. Sem compromisso.",
-      message: "Olá, Fabio! Trabalho com passeios/turismo e quero ver como o sistema de reservas ficaria para mim.",
+      text: "Chame a gente no WhatsApp, conte como funciona hoje e mostramos como ficariam as suas reservas. Sem compromisso.",
+      message: "Olá, Pilum Code! Trabalho com passeios/turismo e quero ver como o sistema de reservas ficaria para mim.",
     },
   },
   {
@@ -961,8 +841,8 @@ export const segments: Segment[] = [
     },
     cta: {
       title: "Vamos criar a sua página profissional?",
-      text: "Me chame no WhatsApp, conte como você atende hoje e eu mostro como ficaria a sua página. Sem compromisso.",
-      message: "Olá, Fabio! Sou advogado(a) e quero ver como ficaria a minha página profissional.",
+      text: "Chame a gente no WhatsApp, conte como você atende hoje e mostramos como ficaria a sua página. Sem compromisso.",
+      message: "Olá, Pilum Code! Sou advogado(a) e quero ver como ficaria a minha página profissional.",
     },
   },
 ];

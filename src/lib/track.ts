@@ -1,7 +1,7 @@
 /**
  * Medição de cliques. Não faz nada até existir um script de análise na página.
  * TODO(fabio): adicionar o script do Plausible (mais leve, sem banner de cookies) ou do GA4 em index.html.
- * Cada clique de WhatsApp envia "whatsapp_click" com o `ref` do botão (ex.: "hero", "card-marmitas", "dor-comissao").
+ * Cada clique de WhatsApp envia "whatsapp_click" com o `ref` do botão (ex.: "hero", "card-delivery-proprio", "dor-comissao").
  */
 type Props = Record<string, string | number>;
 

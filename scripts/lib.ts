@@ -60,6 +60,7 @@ export const GLOBAL_REPLACE: [string | RegExp, string][] = [
   [/Pasta Brasiliana/gi, "Sua Cantina"],
   [/Florecer/gi, "Clínica Exemplo"],
   [/Mileide/gi, "Exemplo"],
+  [/MAX\s*dente/gi, "Clínica Exemplo"],
   [/Ilh[ée]us|Itabuna/g, "Sua Cidade"],
   [/neidemarmitafit\.com\.br|nossobistro\.vercel\.app/gi, "seunegocio.com.br"],
   [/\(73\)\s*9\d{4}-?\d{4}/g, "(00) 90000-0000"],
@@ -251,7 +252,7 @@ const PROD_DATA_HOSTS = (url: URL) =>
   (/\.supabase\.co$/.test(url.hostname) && !url.pathname.startsWith("/storage/v1/object/public/"));
 
 /** Dados de clientes que nunca podem aparecer num print. Retorna o que sobrou na página depois da anonimização. */
-const LEAK = /nosso\s*bistr|neide\s*gama|pasta\s*brasiliana|florecer|mileide|cordeiro|pontal|ilh[ée]us\s*canoe|na[\s-]*kai|fraga\s*center|59\.?899|98859|\(73\)\s*9\d{4}|ilh[ée]us|itabuna/i;
+const LEAK = /max\s*dente|nosso\s*bistr|neide\s*gama|pasta\s*brasiliana|florecer|mileide|cordeiro|pontal|ilh[ée]us\s*canoe|na[\s-]*kai|fraga\s*center|59\.?899|98859|\(73\)\s*9\d{4}|ilh[ée]us|itabuna/i;
 
 export async function leakCheck(page: Page): Promise<string[]> {
   const source = LEAK.source;

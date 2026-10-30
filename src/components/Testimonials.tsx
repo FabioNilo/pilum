@@ -1,7 +1,7 @@
 import { Quote } from "lucide-react";
 
 type Testimonial = {
-  /** Tipo de negócio, ex.: "Marmita fitness". */
+  /** Tipo de negócio, ex.: "Bistrô e cafeteria". */
   business: string;
   /** Nome (ou só o primeiro nome) de quem autorizou a publicação. */
   author: string;
@@ -14,8 +14,6 @@ type Testimonial = {
  * Enquanto um item estiver vazio ele não aparece, e se nenhum estiver preenchido a seção inteira some da página.
  */
 const testimonials: Testimonial[] = [
-  // TODO(fabio): inserir depoimento autorizado (marmita fitness)
-  { business: "Marmita fitness", author: "", quote: "" },
   // TODO(fabio): inserir depoimento autorizado (delivery de comida italiana)
   { business: "Delivery de comida italiana", author: "", quote: "" },
   // TODO(fabio): inserir depoimento autorizado (bistrô/cafeteria)
@@ -31,7 +29,7 @@ export function Testimonials() {
       <div className="container">
         <p className="eyebrow">Quem já usa</p>
         <h2 id="quem-usa" className="mt-2 max-w-2xl text-3xl uppercase sm:text-5xl">
-          O que dizem os donos
+          O que dizem os clientes
         </h2>
         <div className="mt-10 grid gap-4 md:grid-cols-3">
           {ready.map((t) => (

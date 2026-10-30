@@ -4,11 +4,15 @@ import { gsap, NO_PREFERENCE, ScrollTrigger } from "@/lib/motion";
 import { track } from "@/lib/track";
 import { projects } from "@/data/projects";
 import { DEFAULT_SEGMENT, getSegment, readSegmentFromUrl, segments, writeSegmentToUrl, type SegmentId } from "@/data/segments";
+import type { ServiceId } from "@/data/services";
+import { About } from "@/components/About";
 import { BeforeAfter } from "@/components/BeforeAfter";
 import { Chooser } from "@/components/Chooser";
 import { OrderFlow } from "@/components/OrderFlow";
+import { Portfolio } from "@/components/Portfolio";
 import { PwaDemo } from "@/components/PwaDemo";
 import { ProjectCard } from "@/components/ProjectCard";
+import { Services } from "@/components/Services";
 import { SegmentPicker, SegmentSwitcher } from "@/components/SegmentPicker";
 import { Testimonials } from "@/components/Testimonials";
 import { CtaFooter, Differentials, Header, Hero, HowItWorks, PainStrip } from "@/components/Sections";
@@ -30,7 +34,10 @@ function SegmentContent({ animate, children }: { animate: boolean; children: Rea
 }
 
 export default function App() {
-  const [segmentId, setSegmentId] = useState<SegmentId>(() => readSegmentFromUrl() ?? DEFAULT_SEGMENT);
+  // Quem chega por ?nicho= (anúncio, Instagram) ou escolhe um setor recebe o CTA desse setor; os demais, o da empresa.
+  const [fromUrl] = useState(() => readSegmentFromUrl());
+  const [segmentId, setSegmentId] = useState<SegmentId>(() => fromUrl ?? DEFAULT_SEGMENT);
+  const [service, setService] = useState<ServiceId | null>(null);
   const switched = useRef(false);
   const segment = getSegment(segmentId);
   const { solutions } = segment;
@@ -60,11 +67,25 @@ export default function App() {
     window.setTimeout(() => document.getElementById(projectId)?.scrollIntoView({ behavior: smooth ? "smooth" : "auto", block: "start" }), 120);
   };
 
+  // Card de serviço: filtra o portfólio e rola até ele.
+  const pickService = (id: ServiceId) => {
+    track("servico_click", { servico: id });
+    setService(id);
+    const smooth = !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    document.getElementById("portfolio")?.scrollIntoView({ behavior: smooth ? "smooth" : "auto", block: "start" });
+  };
+
+  const segmentCta = fromUrl || switched.current ? segment.cta : undefined;
+
   return (
     <>
       <Header />
       <main>
         <Hero projects={projects} />
+        <Services onPick={pickService} />
+        <Portfolio service={service} onServiceChange={setService} />
+        <Testimonials />
+
         <SegmentPicker value={segmentId} onChange={choose} contentId="nicho" />
 
         <div id="nicho" className="scroll-mt-32">
@@ -101,11 +122,11 @@ export default function App() {
           </SegmentContent>
         </div>
 
-        <Testimonials />
         <HowItWorks />
+        <About />
         <Differentials />
       </main>
-      <CtaFooter title={segment.cta.title} text={segment.cta.text} message={segment.cta.message} />
+      <CtaFooter title={segmentCta?.title} text={segmentCta?.text} message={segmentCta?.message} />
     </>
   );
 }

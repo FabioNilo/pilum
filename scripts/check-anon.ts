@@ -9,7 +9,7 @@ import { fileURLToPath } from "node:url";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 // A cidade do Fabio (rodapé) é legítima; nos prints ela é trocada em scripts/lib.ts.
-const FORBIDDEN = [/nosso\s*bistr/i, /neide/i, /pasta\s*brasiliana/i, /florecer/i, /mileide/i, /neidemarmitafit/i, /nossobistro/i, /easypanel/i, /supabase\.co/i];
+const FORBIDDEN = [/max\s*dente/i, /nosso\s*bistr/i, /neide/i, /pasta\s*brasiliana/i, /florecer/i, /mileide/i, /neidemarmitafit/i, /nossobistro/i, /easypanel/i, /supabase\.co/i];
 const DIRS = ["src", "public", "index.html", "dist"];
 const TEXT = /\.(tsx?|jsx?|css|html|json|svg|txt|md|xml|webmanifest)$/i;
 
