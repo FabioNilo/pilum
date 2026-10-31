@@ -8,6 +8,7 @@ import type { ServiceId } from "@/data/services";
 import { About } from "@/components/About";
 import { BeforeAfter } from "@/components/BeforeAfter";
 import { Chooser } from "@/components/Chooser";
+import { LiveSites } from "@/components/LiveSites";
 import { OrderFlow } from "@/components/OrderFlow";
 import { Portfolio } from "@/components/Portfolio";
 import { PwaDemo } from "@/components/PwaDemo";
@@ -84,6 +85,7 @@ export default function App() {
         <Hero projects={projects} />
         <Services onPick={pickService} />
         <Portfolio service={service} onServiceChange={setService} />
+        <LiveSites />
         <Testimonials />
 
         <SegmentPicker value={segmentId} onChange={choose} contentId="nicho" />

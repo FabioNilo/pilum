@@ -1,0 +1,9 @@
+node_modules
+dist
+.git
+videos
+scripts/.tmp
+*.tsbuildinfo
+.env*
+Dockerfile
+.dockerignore

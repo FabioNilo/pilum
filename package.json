@@ -8,7 +8,8 @@
     "build": "tsc -b && vite build",
     "preview": "vite preview",
     "capture": "tsx scripts/capture.ts",
-    "check:anon": "tsx scripts/check-anon.ts"
+    "check:anon": "tsx scripts/check-anon.ts",
+    "videos": "vite build && tsx scripts/videos.ts"
   },
   "dependencies": {
     "@gsap/react": "^2.1.2",

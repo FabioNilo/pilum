@@ -14,13 +14,7 @@ export const site = {
 
 export type Founder = { name: string; role: string; bio: string; photo?: string };
 
-/** Seção "Quem somos". Sem `photo`, aparecem as iniciais. */
+/** Seção "Quem somos". Sem `photo`, aparecem as iniciais; lista vazia = só o texto institucional. */
 export const founders: Founder[] = [
-  {
-    name: "Fabio Soares",
-    role: "Fundador · desenvolvedor fullstack",
-    // TODO(fabio): revisar a bio e, se quiser, adicionar a foto em public/ e preencher `photo`.
-    bio: "Cuida do contato com o cliente, do desenho da solução e do desenvolvimento, do banco de dados à tela.",
-  },
   // TODO(fabio): incluir o Ricardo só depois de ele concordar (nome, papel, bio e foto).
 ];
