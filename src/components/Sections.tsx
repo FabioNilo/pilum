@@ -89,9 +89,8 @@ export function Hero({ projects }: { projects: ProjectWithSlides[] }) {
             <MapPin className="h-4 w-4" aria-hidden />
             Ilhéus e Itabuna – BA · atendimento em todo o Brasil
           </p>
-          <h1 data-hero className="mt-4 text-[1.75rem] leading-tight sm:text-4xl lg:text-[2.6rem]">
-            Desenvolvemos sistemas, sites e automações para pequenos negócios e empresas. Antes de escrever código,
-            entendemos onde a operação perde tempo e dinheiro, e <span className="text-accent">o software mira exatamente ali.</span>
+          <h1 data-hero className="mt-4 text-[2.6rem] uppercase leading-[1.02] sm:text-6xl lg:text-[4.1rem]">
+            Do processo ao sistema. <span className="text-accent">Feito para acertar.</span>
           </h1>
           <p data-hero className="mt-5 max-w-xl text-lg text-ink-soft">
             Cada negócio tem sua rotina e seus próprios desafios. Entendemos como a sua operação funciona, identificamos onde
